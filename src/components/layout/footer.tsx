@@ -46,12 +46,12 @@ export function Footer() {
             <h4 className="font-semibold mb-4">დამატებითი ბმულები</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/process" className="text-neutral-400 hover:text-white">
+                <Link href="/#process" className="text-neutral-400 hover:text-white">
                   როგორ მუშაობს
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-neutral-400 hover:text-white">
+                <Link href="/#faq" className="text-neutral-400 hover:text-white">
                   ხშირად დასმული კითხვები
                 </Link>
               </li>

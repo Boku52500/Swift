@@ -38,7 +38,7 @@ const config = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https://swiftautoimport.ge https://res.cloudinary.com",
+              "img-src 'self' blob: data: https://swiftautoimport.ge https://res.cloudinary.com",
               "font-src 'self' data:",
               "connect-src 'self'",
               "frame-ancestors 'self'",
