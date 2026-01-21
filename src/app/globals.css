@@ -19,13 +19,6 @@
     color: theme('colors.neutral.900');
     font-family: 'BPG QuadroSquare', system-ui, sans-serif;
   }
-
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: theme('colors.neutral.950');
-      color: theme('colors.white');
-    }
-  }
 }
 
 /* Admin form overrides: make fields white with black text */

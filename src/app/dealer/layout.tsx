@@ -241,7 +241,7 @@ export default function DealerLayout({
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button aria-label="ტრანსპორტირების ფასი" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <Ship className="h-4 w-4" />
+                  <Ship className="h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden md:inline">ტრანსპორტირების ფასი</span>
                 </Button>
               </DialogTrigger>
@@ -333,7 +333,7 @@ export default function DealerLayout({
             <Dialog open={docsOpen} onOpenChange={setDocsOpen}>
               <DialogTrigger asChild>
                 <Button aria-label="საბუთები" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <FileText className="h-4 w-4" />
+                  <FileText className="h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden md:inline">საბუთები</span>
                 </Button>
               </DialogTrigger>
@@ -444,7 +444,7 @@ export default function DealerLayout({
             <Dialog open={calcOpen} onOpenChange={setCalcOpen}>
               <DialogTrigger asChild>
                 <Button aria-label="აუქციონის დანამატის კალკულატორი" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <Calculator className="h-4 w-4" />
+                  <Calculator className="h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden md:inline">აუქციონის დანამატის კალკულატორი</span>
                 </Button>
               </DialogTrigger>
@@ -462,7 +462,7 @@ export default function DealerLayout({
               onClick={() => signOut({ callbackUrl: "/" })}
               aria-label="გასვლა"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden md:inline">გასვლა</span>
             </Button>
           </div>
