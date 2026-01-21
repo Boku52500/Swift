@@ -4,6 +4,7 @@ import path from "path"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { siteConfig } from "@/lib/metadata"
+import { sameOriginAllowed, redactError } from "@/lib/security"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -83,27 +84,7 @@ const cloudinary: any = initCloudinary()
 export async function POST(req: Request) {
   try {
     // CSRF origin check (allow same-origin; allow empty for non-browser clients)
-    const baseUrl = siteConfig.url
-    const origin = req.headers.get("origin") || ""
-    const referer = req.headers.get("referer") || ""
-    const host = req.headers.get("host") || ""
-    const isAllowed = (u: string) => {
-      try {
-        const parsed = new URL(u)
-        if (u.startsWith(baseUrl)) return true
-        if (parsed.host === host) return true
-        const hostH = (host.split(":")[0] || "").toLowerCase()
-        const uH = parsed.hostname.toLowerCase()
-        const devHosts = new Set(["localhost", "127.0.0.1"]) 
-        if (devHosts.has(hostH) && devHosts.has(uH)) return true
-        return false
-      } catch {
-        return false
-      }
-    }
-    if (process.env.NODE_ENV !== "production") {
-      // Be permissive in development
-    } else if ((origin && !isAllowed(origin)) || (referer && !isAllowed(referer))) {
+    if (!sameOriginAllowed(req, siteConfig.url)) {
       return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
     }
 
@@ -228,6 +209,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, urls })
   } catch (error: any) {
     console.error("[UPLOAD_ERROR]", error)
-    return NextResponse.json({ success: false, message: `Upload failed: ${error?.message || error}` }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Upload failed", details: redactError(error) }, { status: 500 })
   }
 }

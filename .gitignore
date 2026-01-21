@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# disallow committing local uploads (dev-only)
+/public/uploads/

@@ -27,6 +27,9 @@ const config = {
   },
   compress: true,
   poweredByHeader: false,
+  async redirects() {
+    return []
+  },
   async headers() {
     return [
       {
@@ -36,44 +39,25 @@ const config = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "base-uri 'self'",
+              "object-src 'none'",
+              "form-action 'self'",
+              "script-src 'self' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' blob: data: https://swiftautoimport.ge https://res.cloudinary.com",
+              "img-src 'self' data: blob: https://swiftautoimport.ge https://res.cloudinary.com",
               "font-src 'self' data:",
               "connect-src 'self'",
               "frame-ancestors 'self'",
+              "upgrade-insecure-requests",
             ].join('; '),
           },
-        ],
-      },
-      {
-        source: '/:all*(svg|jpg|png|webp)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
-          }
-        ]
-      },
-      {
-        source: '/fonts/:all*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
-          }
-        ]
-      },
-      {
-        source: '/:path*',
-        headers: [
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
           },
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains'
+            value: 'max-age=31536000; includeSubDomains; preload'
           },
           {
             key: 'X-Frame-Options',
@@ -90,6 +74,32 @@ const config = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-site'
+          }
+        ],
+      },
+      {
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|gif)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/fonts/:all*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           }
         ]
       }

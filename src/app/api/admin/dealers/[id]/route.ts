@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { hash } from "bcryptjs"
+import { sameOriginAllowed, redactError } from "@/lib/security"
+import { siteConfig } from "@/lib/metadata"
 
 export async function PATCH(
   req: Request,
@@ -13,6 +15,10 @@ export async function PATCH(
 
     if (!session || session.user.role !== "ADMIN") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    }
+
+    if (!sameOriginAllowed(req, siteConfig.url)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
     }
 
     const { id } = await params
@@ -81,7 +87,7 @@ export async function PATCH(
     console.error("[DEALER_UPDATE]", error)
     return NextResponse.json({ 
       message: "Failed to update dealer",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: redactError(error)
     }, { status: 500 })
   }
 }
@@ -108,6 +114,10 @@ export async function DELETE(
         success: false,
         message: "Unauthorized" 
       }, { status: 401 })
+    }
+
+    if (!sameOriginAllowed(req, (siteConfig as any).url)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
     }
 
     // Find the user and check role
@@ -162,7 +172,7 @@ export async function DELETE(
       return NextResponse.json({ 
         success: false,
         message: "Failed to delete dealer",
-        details: txError instanceof Error ? txError.message : "Transaction failed"
+        details: redactError(txError)
       }, { status: 500 })
     }
 
@@ -171,7 +181,7 @@ export async function DELETE(
     return NextResponse.json({ 
       success: false,
       message: "Failed to delete dealer",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: redactError(error)
     }, { status: 500 })
   }
 }

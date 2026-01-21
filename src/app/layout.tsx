@@ -15,11 +15,11 @@ export default function RootLayout({
   return (
     <html lang="ka" className="scroll-smooth">
       <head>
-        <link rel="preload" as="font" href="/fonts/bpg_quadrosquare_caps_2013.ttf" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ef4444" />
         <link rel="icon" type="image/png" href="/images/favicon.png" />
         <link rel="shortcut icon" href="/images/favicon.png" />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/images/favicon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

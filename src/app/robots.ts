@@ -12,8 +12,9 @@ export default function robots(): MetadataRoute.Robots {
           '/manqanebi-amerikidan',
           '/avto-importi',
           '/meoradi-manqanebi',
-          '/services',
-          '/become-dealer',
+          '/servisebi',
+          '/gaxdi-dileri',
+          '/auqcionis-kalkulatori',
           '/contact',
           '/popularuli-manqanebi',
           '/popularuli-manqanebi/*'
@@ -21,6 +22,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/private/',
           '/api/',
+          '/uploads/',
           // keep JSON accessible (manifests, feeds)
         ]
       },

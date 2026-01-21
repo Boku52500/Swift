@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { sameOriginAllowed, redactError } from "@/lib/security"
+import { siteConfig } from "@/lib/metadata"
 
 export async function GET(req: Request) {
   try {
@@ -51,7 +53,7 @@ export async function GET(req: Request) {
     return NextResponse.json(data)
   } catch (error) {
     console.error("[INVOICES_GET]", error)
-    return NextResponse.json({ success: false, message: "Failed to fetch invoices" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to fetch invoices", details: redactError(error) }, { status: 500 })
   }
 }
 
@@ -60,6 +62,10 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
     if (!session || session.user.role !== "ADMIN") {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 })
+    }
+
+    if (!sameOriginAllowed(req, siteConfig.url)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
     }
 
     const body = await req.json()
@@ -100,6 +106,6 @@ export async function POST(req: Request) {
     return NextResponse.json(response, { status: 201 })
   } catch (error) {
     console.error("[INVOICES_POST]", error)
-    return NextResponse.json({ success: false, message: "Failed to create invoice" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to create invoice", details: redactError(error) }, { status: 500 })
   }
 }

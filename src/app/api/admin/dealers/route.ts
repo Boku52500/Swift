@@ -3,6 +3,8 @@ import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { sameOriginAllowed, redactError } from "@/lib/security"
+import { siteConfig } from "@/lib/metadata"
 
 // GET /api/admin/dealers - List all dealers
 export async function GET() {
@@ -48,7 +50,7 @@ export async function GET() {
     return NextResponse.json({
       success: false,
       message: "Failed to fetch dealers",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: redactError(error)
     }, { status: 500 })
   }
 }
@@ -63,6 +65,10 @@ export async function POST(req: Request) {
         success: false,
         message: "Unauthorized"
       }, { status: 401 })
+    }
+
+    if (!sameOriginAllowed(req, siteConfig.url)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
     }
 
     const body = await req.json()
@@ -121,7 +127,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: false,
       message: "Failed to create dealer",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: redactError(error)
     }, { status: 500 })
   }
 }

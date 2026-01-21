@@ -59,21 +59,21 @@ export function Header() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <Link 
-            href="/services" 
+            href="/servisebi" 
             className="text-neutral-600 hover:text-neutral-900"
           >
             სერვისები
           </Link>
 
           <Link 
-            href="/calculator" 
+            href="/auqcionis-kalkulatori" 
             className="text-neutral-600 hover:text-neutral-900"
           >
             დარიცხვის კალკულატორი
           </Link>
 
           <Link 
-            href="/become-dealer" 
+            href="/gaxdi-dileri" 
             className="text-neutral-600 hover:text-neutral-900"
           >
             გახდი დილერი
@@ -146,7 +146,7 @@ export function Header() {
             <div className="mt-8 space-y-6">
               <div className="space-y-4">
                 <Link 
-                  href="/services" 
+                  href="/servisebi" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -154,7 +154,7 @@ export function Header() {
                 </Link>
 
                 <Link 
-                  href="/calculator" 
+                  href="/auqcionis-kalkulatori" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -162,7 +162,7 @@ export function Header() {
                 </Link>
 
                 <Link 
-                  href="/become-dealer" 
+                  href="/gaxdi-dileri" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
                   onClick={() => setMobileOpen(false)}
                 >

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { promises as fs } from "fs"
 import path from "path"
+import { redactError } from "@/lib/security"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -9,14 +10,55 @@ function normalizeHeader(s: string) {
   return (s || "").toLowerCase().replace(/\s+/g, " ")
 }
 
-async function readWorkbookBytes(origin?: string | null): Promise<Uint8Array | null> {
+const MAX_EXCEL_BYTES = 10 * 1024 * 1024 // 10MB
+const CACHE_TTL_MS = 10 * 60 * 1000 // 10 minutes
+type ParsedDocs = { items: Array<{ id: string; title: string; express: string; regular: string }>; meta: Array<{ sheet: string; headers: string[]; mapped: { titleIdx: number; expressIdx: number; regularIdx: number } }> }
+const parsedCache = new Map<string, { ts: number; value: ParsedDocs }>()
+
+function getAllowedHosts(reqHost?: string | null): Set<string> {
+  const defaults = ["swiftautoimport.ge", "res.cloudinary.com"]
+  const envList = (process.env.DOCS_REMOTE_ALLOW_HOSTS || "")
+    .split(",")
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+  const hostOnly = (reqHost || "").toLowerCase().split(":" )[0]
+  return new Set([hostOnly, ...defaults, ...envList])
+}
+
+function isHostAllowed(u: string, allowed: Set<string>): boolean {
+  try {
+    const h = new URL(u).hostname.toLowerCase()
+    return allowed.has(h)
+  } catch {
+    return false
+  }
+}
+
+async function fetchWithTimeout(url: string, ms: number): Promise<Response> {
+  const c = new AbortController()
+  const t = setTimeout(() => c.abort(), ms)
+  try {
+    return await fetch(url, { signal: c.signal })
+  } finally {
+    clearTimeout(t)
+  }
+}
+
+async function readWorkbookBytes(origin?: string | null, reqHost?: string | null): Promise<Uint8Array | null> {
   try {
     // Prefer remote file if provided (works on Vercel without local FS persistence)
     const remoteUrl = process.env.DOCS_EXCEL_URL || process.env.DOCS_FILE_URL
     if (remoteUrl) {
-      const res = await fetch(remoteUrl)
+      const allowed = getAllowedHosts(reqHost)
+      if (!isHostAllowed(remoteUrl, allowed)) {
+        return null
+      }
+      const res = await fetchWithTimeout(remoteUrl, 8000)
       if (!res.ok) return null
+      const clen = Number(res.headers.get("content-length") || "0")
+      if (clen && clen > MAX_EXCEL_BYTES) return null
       const ab = await res.arrayBuffer()
+      if (ab.byteLength > MAX_EXCEL_BYTES) return null
       return new Uint8Array(ab)
     }
 
@@ -24,7 +66,7 @@ async function readWorkbookBytes(origin?: string | null): Promise<Uint8Array | n
     if (origin) {
       try {
         const candidate = new URL("/uploads/საბუთები.xlsx", origin).toString()
-        const res2 = await fetch(candidate)
+        const res2 = await fetchWithTimeout(candidate, 5000)
         if (res2.ok) {
           const ab2 = await res2.arrayBuffer()
           return new Uint8Array(ab2)
@@ -52,8 +94,17 @@ async function readWorkbookBytes(origin?: string | null): Promise<Uint8Array | n
 
 export async function GET(req: Request) {
   try {
-    const { origin } = new URL(req.url)
-    const bytes = await readWorkbookBytes(origin)
+    const { origin, host } = new URL(req.url) as any
+
+    const remote = process.env.DOCS_EXCEL_URL || process.env.DOCS_FILE_URL || ""
+    const cacheKey = remote ? `remote:${remote}` : `origin:${origin}`
+    const now = Date.now()
+    const cached = parsedCache.get(cacheKey)
+    if (cached && (now - cached.ts) < CACHE_TTL_MS) {
+      return NextResponse.json({ success: true, ...cached.value })
+    }
+
+    const bytes = await readWorkbookBytes(origin, host)
     if (!bytes) return NextResponse.json({ success: false, message: "Excel file not found" }, { status: 404 })
 
     // Dynamic import on server
@@ -120,8 +171,10 @@ export async function GET(req: Request) {
       uniq.push(it)
     }
 
-    return NextResponse.json({ success: true, items: uniq, meta })
+    const payload: ParsedDocs = { items: uniq, meta }
+    parsedCache.set(cacheKey, { ts: now, value: payload })
+    return NextResponse.json({ success: true, ...payload })
   } catch (e: any) {
-    return NextResponse.json({ success: false, message: e?.message || "Failed to parse" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to parse", details: redactError(e) }, { status: 500 })
   }
 }

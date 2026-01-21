@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import tls from "tls"
+import { sameOriginAllowed, redactError } from "@/lib/security"
+import { siteConfig } from "@/lib/metadata"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -101,6 +103,9 @@ async function sendSMTP(opts: SmtpOpts): Promise<void> {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!sameOriginAllowed(req as unknown as Request, siteConfig.url)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 })
+    }
     const body = await req.json().catch(() => null)
     const name = String(body?.name || "").trim()
     const phone = String(body?.phone || "").trim()
@@ -134,6 +139,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (e: any) {
-    return NextResponse.json({ success: false, message: e?.message || "Failed to send" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to send", details: redactError(e) }, { status: 500 })
   }
 }
