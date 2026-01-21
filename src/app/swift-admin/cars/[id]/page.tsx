@@ -25,6 +25,8 @@ interface Car {
   dealerId: string
   status: string
   images: string[]
+  location?: string | null
+  notes?: string | null
   invoices?: { id: string; amount: number; isPaid: boolean; fileUrl: string }[]
   transportInfo: {
     pickupDate: string | null

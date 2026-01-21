@@ -5,12 +5,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "next-auth/react"
 import { useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useState, Suspense } from "react"
+
+function ErrorBanner() {
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error")
+  if (!error) return null
+  return (
+    <p className="mt-4 text-sm text-red-600">არასწორი მონაცემები</p>
+  )
+}
 
 export default function DealerLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const searchParams = useSearchParams()
-  const error = searchParams.get("error")
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -37,9 +44,9 @@ export default function DealerLoginPage() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold mb-2">დილერის გვერდი</h1>
           <p className="text-neutral-600">გთხოვთ შეიყვანოთ თქვენი მონაცემები</p>
-          {error && (
-            <p className="mt-4 text-sm text-red-600">არასწორი მონაცემები</p>
-          )}
+          <Suspense fallback={null}>
+            <ErrorBanner />
+          </Suspense>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

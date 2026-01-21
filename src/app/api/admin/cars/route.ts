@@ -16,6 +16,7 @@ export async function GET(req: Request) {
     // Get query parameters
     const url = new URL(req.url)
     const status = url.searchParams.get("status")
+    const transportStatus = url.searchParams.get("transportStatus")
     const dealerId = url.searchParams.get("dealerId")
     const vin = url.searchParams.get("vin")
     const lotNumber = url.searchParams.get("lotNumber")
@@ -45,6 +46,11 @@ export async function GET(req: Request) {
         or.push({ year: yr })
       }
       where.OR = or
+    }
+
+    // Optional filter by transport status (related one-to-one)
+    if (transportStatus) {
+      where.transportInfo = { is: { status: transportStatus as any } }
     }
 
     const cars = await prisma.car.findMany({

@@ -5,12 +5,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState, Suspense } from "react"
+
+function CallbackUrlReader({ onChange }: { onChange: (v: string) => void }) {
+  const searchParams = useSearchParams()
+  const cb = searchParams.get("callbackUrl") || "/dealer"
+  useEffect(() => {
+    onChange(cb)
+  }, [cb, onChange])
+  return null
+}
 
 export default function SignInPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/dealer"
+  const [callbackUrl, setCallbackUrl] = useState<string>("/dealer")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -48,6 +56,9 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-neutral-50">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
         <h1 className="text-2xl font-bold text-center mb-8">დილერის გვერდი</h1>
+        <Suspense fallback={null}>
+          <CallbackUrlReader onChange={setCallbackUrl} />
+        </Suspense>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">ელ. ფოსტა</Label>

@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { CarStatus } from "@prisma/client"
-import type { CarData, CarWithRelations } from "@/types/car"
 
 function toNum(v: any): number | undefined {
   if (v == null) return undefined
