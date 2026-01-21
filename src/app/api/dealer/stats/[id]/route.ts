@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -13,8 +13,10 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
+    const { id } = await params
+
     // Only allow dealers to access their own stats
-    if (session.user.role !== "DEALER" || session.user.id !== params.id) {
+    if (session.user.role !== "DEALER" || session.user.id !== id) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
 

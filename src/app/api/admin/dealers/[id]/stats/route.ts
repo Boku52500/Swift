@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { getServerSession } from "next-auth"
 import { prisma } from "@/lib/prisma"
 import { authOptions } from "@/lib/auth"
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -15,11 +15,12 @@ export async function PUT(
     }
 
     const stats = await req.json()
+    const { id } = await params
 
     // Update or create dealer stats
     const updatedStats = await prisma.dealerStats.upsert({
       where: {
-        dealerId: params.id
+        dealerId: id
       },
       update: {
         totalCars: stats.totalCars,
@@ -34,7 +35,7 @@ export async function PUT(
         invoiceBalance: stats.invoiceBalance,
       },
       create: {
-        dealerId: params.id,
+        dealerId: id,
         totalCars: stats.totalCars,
         arrivedCars: stats.arrivedCars,
         notInWarehouse: stats.notInWarehouse,
