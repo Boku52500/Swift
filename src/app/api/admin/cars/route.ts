@@ -121,8 +121,19 @@ export async function POST(req: Request) {
       invoices: invoiceItems = [],
     } = body
 
-    // Validate required fields
-    if (!vin || !make || !model || !year || !dealerId || !purchasePrice || !transportPrice) {
+    const yearNum = Number(year)
+    const purchasePriceNum = Number(purchasePrice)
+    const transportPriceNum = Number(transportPrice)
+
+    if (
+      !vin ||
+      !make ||
+      !model ||
+      !dealerId ||
+      !Number.isFinite(yearNum) ||
+      !Number.isFinite(purchasePriceNum) ||
+      !Number.isFinite(transportPriceNum)
+    ) {
       return NextResponse.json({ 
         success: false,
         message: "Missing required fields" 
@@ -138,11 +149,11 @@ export async function POST(req: Request) {
         vin,
         make,
         model,
-        year,
+        year: yearNum,
         lotNumber,
         auction,
-        purchasePrice,
-        transportPrice,
+        purchasePrice: purchasePriceNum,
+        transportPrice: transportPriceNum,
         dealer: { connect: { id: dealerId } },
         buyer,
         receiver,
@@ -196,8 +207,18 @@ export async function POST(req: Request) {
       success: true,
       data: car
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error("[CAR_CREATE]", error)
+    const code = (error && error.code) || (error && error.meta && error.meta.cause)
+    if (code === 'P2002') {
+      return NextResponse.json({ success: false, message: 'VIN already exists' }, { status: 409 })
+    }
+    if (code === 'P2025' || (error && /Record to delete does not exist|An operation failed because it depends on/.test(String(error.message || '')))) {
+      return NextResponse.json({ success: false, message: 'Dealer not found' }, { status: 400 })
+    }
+    if (code === 'P2003') {
+      return NextResponse.json({ success: false, message: 'Invalid dealer reference' }, { status: 400 })
+    }
     return NextResponse.json({ 
       success: false,
       message: "Failed to create car",

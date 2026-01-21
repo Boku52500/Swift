@@ -9,26 +9,39 @@ function normalizeHeader(s: string) {
   return (s || "").toLowerCase().replace(/\s+/g, " ")
 }
 
-async function readWorkbookBytes(): Promise<Uint8Array | null> {
+async function readWorkbookBytes(origin?: string | null): Promise<Uint8Array | null> {
   try {
-    let uploadDir = path.join(process.cwd(), "public", "uploads")
-    try { await fs.mkdir(uploadDir, { recursive: true }) } catch {}
-    if (!uploadDir.replace(/\\/g, "/").includes("swift-auto-import/public/uploads")) {
-      const fallbackProject = path.join(
-        process.env.USERPROFILE || process.env.HOME || "",
-        "OneDrive",
-        "Desktop",
-        "Swift Site",
-        "swift-auto-import"
-      )
-      uploadDir = path.join(fallbackProject, "public", "uploads")
-      try { await fs.mkdir(uploadDir, { recursive: true }) } catch {}
+    // Prefer remote file if provided (works on Vercel without local FS persistence)
+    const remoteUrl = process.env.DOCS_EXCEL_URL || process.env.DOCS_FILE_URL
+    if (remoteUrl) {
+      const res = await fetch(remoteUrl)
+      if (!res.ok) return null
+      const ab = await res.arrayBuffer()
+      return new Uint8Array(ab)
     }
-    const entries = await fs.readdir(uploadDir, { withFileTypes: true })
+
+    // Try fetching the static file served from the site origin (works on Vercel if file is under /public/uploads)
+    if (origin) {
+      try {
+        const candidate = new URL("/uploads/საბუთები.xlsx", origin).toString()
+        const res2 = await fetch(candidate)
+        if (res2.ok) {
+          const ab2 = await res2.arrayBuffer()
+          return new Uint8Array(ab2)
+        }
+      } catch {}
+    }
+
+    // Fallback to reading from the repository's public/uploads directory
+    const uploadDir = path.join(process.cwd(), "public", "uploads")
+    const entries = await fs.readdir(uploadDir, { withFileTypes: true }).catch(() => [])
+    if (!entries || !entries.length) return null
     // Look for exact name first
     let target = entries.find(e => e.isFile() && e.name.toLowerCase() === "საბუთები.xlsx")?.name
     // Fallback: any file whose name contains 'საბუთ'
     if (!target) target = entries.find(e => e.isFile() && e.name.toLowerCase().includes("საბუთ"))?.name
+    // Fallback: any .xlsx file
+    if (!target) target = entries.find(e => e.isFile() && e.name.toLowerCase().endsWith(".xlsx"))?.name
     if (!target) return null
     const buf = await fs.readFile(path.join(uploadDir, target))
     return new Uint8Array(buf)
@@ -37,9 +50,10 @@ async function readWorkbookBytes(): Promise<Uint8Array | null> {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const bytes = await readWorkbookBytes()
+    const { origin } = new URL(req.url)
+    const bytes = await readWorkbookBytes(origin)
     if (!bytes) return NextResponse.json({ success: false, message: "Excel file not found" }, { status: 404 })
 
     // Dynamic import on server

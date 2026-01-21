@@ -150,13 +150,15 @@ export default function NewCarPage() {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create car")
+        const j = await response.json().catch(() => ({}))
+        const msg = (j && (j.message || j.error || j.details)) || `Failed to create car (${response.status})`
+        throw new Error(msg)
       }
 
       router.push("/swift-admin/cars")
       router.refresh()
     } catch (error) {
-      setError("Failed to create car")
+      setError(error instanceof Error ? error.message : "Failed to create car")
     } finally {
       setIsLoading(false)
     }
