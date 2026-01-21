@@ -32,17 +32,42 @@ function checkRateLimit(ip: string): boolean {
 
 function initCloudinary(): any | null {
   try {
-    const hasUrl = !!process.env.CLOUDINARY_URL
-    const hasLegacy = !!(process.env.CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET)
-    if (!hasUrl && !hasLegacy) return null
     const c = require('cloudinary').v2
+    const url = (process.env.CLOUDINARY_URL || "").trim()
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUD_NAME
+    const apiKey = process.env.CLOUDINARY_API_KEY
+    const apiSecret = process.env.CLOUDINARY_API_SECRET
+    const hasUrl = !!url
+    const hasLegacy = !!(cloudName && apiKey && apiSecret)
+    if (!hasUrl && !hasLegacy) return null
     if (hasUrl) {
-      c.config({ secure: true })
+      try {
+        const u = new URL(url)
+        const parsedCloud = u.hostname
+        const parsedKey = decodeURIComponent(u.username || "")
+        const parsedSecret = decodeURIComponent(u.password || "")
+        if (!parsedCloud || !parsedKey || !parsedSecret) throw new Error("Malformed CLOUDINARY_URL")
+        c.config({
+          cloud_name: parsedCloud,
+          api_key: parsedKey,
+          api_secret: parsedSecret,
+          secure: true,
+        })
+      } catch (e) {
+        console.warn('[UPLOAD] Failed to parse CLOUDINARY_URL, falling back to env triplet:', (e as Error)?.message)
+        if (!hasLegacy) throw e
+        c.config({
+          cloud_name: cloudName,
+          api_key: apiKey,
+          api_secret: apiSecret,
+          secure: true,
+        })
+      }
     } else {
       c.config({
-        cloud_name: process.env.CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET,
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret,
         secure: true,
       })
     }
@@ -102,11 +127,12 @@ export async function POST(req: Request) {
     let files: File[] = []
     const many = form.getAll("files")
     if (many && many.length) {
-      files = many.filter((f): f is File => f instanceof File)
+      const casted = many.filter((f: any) => f && typeof f.arrayBuffer === 'function') as unknown as File[]
+      files = casted
     }
     const single = form.get("file")
-    if ((!files || files.length === 0) && single && single instanceof File) {
-      files = [single]
+    if ((!files || files.length === 0) && single && (single as any) && typeof (single as any).arrayBuffer === 'function') {
+      files = [single as any as File]
     }
 
     if (!files || files.length === 0) {
@@ -153,7 +179,6 @@ export async function POST(req: Request) {
 
     let totalBytes = 0
     for (const file of files) {
-      if (!(file instanceof File)) continue
       const fileType = (file.type || "").toLowerCase()
       const byMime = fileType.startsWith("image/")
       const fname = (file as any).name || ""
