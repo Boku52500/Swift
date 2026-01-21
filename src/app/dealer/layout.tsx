@@ -158,7 +158,7 @@ export default function DealerLayout({
       {/* Mobile overlay and off-canvas sidebar */}
       {mobileNavOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-white/40 md:hidden"
           onClick={() => setMobileNavOpen(false)}
         />
       )}

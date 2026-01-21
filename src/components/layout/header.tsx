@@ -24,6 +24,7 @@ import {
 export function Header() {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleLogoClick = (e: React.MouseEvent) => {
     if (pathname === '/') {
@@ -130,7 +131,7 @@ export function Header() {
         </div>
 
         {/* Mobile Menu */}
-        <Sheet>
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden" aria-label="მობილური მენიუ">
               <Menu className="w-5 h-5" />
@@ -147,6 +148,7 @@ export function Header() {
                 <Link 
                   href="/services" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
+                  onClick={() => setMobileOpen(false)}
                 >
                   სერვისები
                 </Link>
@@ -154,6 +156,7 @@ export function Header() {
                 <Link 
                   href="/calculator" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
+                  onClick={() => setMobileOpen(false)}
                 >
                   დარიცხვის კალკულატორი
                 </Link>
@@ -161,6 +164,7 @@ export function Header() {
                 <Link 
                   href="/become-dealer" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
+                  onClick={() => setMobileOpen(false)}
                 >
                   გახდი დილერი
                 </Link>
@@ -173,22 +177,22 @@ export function Header() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[calc(100vw-3rem)] sm:w-[368px]">
                     <DropdownMenuItem asChild>
-                      <Link href="/amerikis-avto-auqcioni" className="w-full">
+                      <Link href="/amerikis-avto-auqcioni" className="w-full" onClick={() => setMobileOpen(false)}>
                         ამერიკის ავტო აუქციონი
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/manqanebi-amerikidan" className="w-full">
+                      <Link href="/manqanebi-amerikidan" className="w-full" onClick={() => setMobileOpen(false)}>
                         მანქანები ამერიკიდან
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/avto-importi" className="w-full">
+                      <Link href="/avto-importi" className="w-full" onClick={() => setMobileOpen(false)}>
                         ავტო იმპორტი
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/meoradi-manqanebi" className="w-full">
+                      <Link href="/meoradi-manqanebi" className="w-full" onClick={() => setMobileOpen(false)}>
                         მეორადი მანქანები
                       </Link>
                     </DropdownMenuItem>
@@ -198,6 +202,7 @@ export function Header() {
                 <Link 
                   href="/contact" 
                   className="block py-2 px-4 hover:bg-neutral-100 rounded-md"
+                  onClick={() => setMobileOpen(false)}
                 >
                   კონტაქტი
                 </Link>
@@ -205,12 +210,12 @@ export function Header() {
               </div>
               <div className="pt-4 border-t space-y-4">
                 <Button asChild variant="default" size="lg" className="w-full">
-                  <Link href={session?.user ? "/dealer" : "/dealer/login"}>
+                  <Link href={session?.user ? "/dealer" : "/dealer/login"} onClick={() => setMobileOpen(false)}>
                     დილერის გვერდი
                   </Link>
                 </Button>
                 <Button asChild variant="default" size="lg" className="w-full">
-                  <Link href="tel:+995577908080" className="flex items-center justify-center gap-2">
+                  <Link href="tel:+995577908080" className="flex items-center justify-center gap-2" onClick={() => setMobileOpen(false)}>
                     <Phone className="w-4 h-4" />
                     +995 577 90 80 80
                   </Link>

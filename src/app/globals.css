@@ -3,6 +3,9 @@
 @import 'tailwindcss/utilities';
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   @font-face {
     font-family: 'BPG QuadroSquare';
     src: url('/fonts/bpg_quadrosquare_caps_2013.ttf') format('truetype');
