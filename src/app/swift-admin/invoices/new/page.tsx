@@ -51,16 +51,24 @@ export default function NewInvoicePage() {
       const fd = new FormData()
       fd.append("file", file)
       const up = await fetch("/api/upload", { method: "POST", body: fd })
-      if (!up.ok) throw new Error("Failed to upload file")
-      const upData = await up.json()
-      const fileUrl = upData.url
+      const upData = await up.json().catch(() => ({}))
+      if (!up.ok || !upData?.success) {
+        const msg = (upData && (upData.message || upData.error)) || `Failed to upload file (${up.status})`
+        throw new Error(msg)
+      }
+      const fileUrl: string | undefined = Array.isArray(upData.urls) ? upData.urls[0] : upData.url
+      if (!fileUrl) throw new Error("Upload failed: empty response")
 
       const resp = await fetch("/api/admin/invoices", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ carId, amount: amt, isPaid, fileUrl })
       })
-      if (!resp.ok) throw new Error("Failed to create invoice")
+      if (!resp.ok) {
+        const d = await resp.json().catch(() => ({}))
+        const msg = (d && (d.message || d.error)) || `Failed to create invoice (${resp.status})`
+        throw new Error(msg)
+      }
       setSuccess("ინვოისი დამატებულია")
       setCarId("")
       setAmount("")

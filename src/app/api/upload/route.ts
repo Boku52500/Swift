@@ -93,13 +93,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 })
     }
 
-    // In production without Cloudinary configured, proceed with local storage but warn.
+    // In production Cloudinary must be configured; do not fall back to local FS
     if (process.env.NODE_ENV === "production" && !cloudinary) {
-      console.warn('[UPLOAD] Using local filesystem storage in production. Consider configuring Cloudinary for persistence.')
+      return NextResponse.json({ success: false, message: "Upload service not configured. Set CLOUDINARY_URL or Cloudinary credentials." }, { status: 500 })
     }
 
     const form = await req.formData()
-    const files = form.getAll("files") as File[]
+    let files: File[] = []
+    const many = form.getAll("files")
+    if (many && many.length) {
+      files = many.filter((f): f is File => f instanceof File)
+    }
+    const single = form.get("file")
+    if ((!files || files.length === 0) && single && single instanceof File) {
+      files = [single]
+    }
 
     if (!files || files.length === 0) {
       return NextResponse.json({ success: false, message: "No files uploaded" }, { status: 400 })
@@ -115,12 +123,13 @@ export async function POST(req: Request) {
       "image/avif",
       "image/heic",
       "image/heif",
+      "application/pdf",
     ]) // extended types (SVG excluded)
     if (files.length > MAX_FILES) {
       return NextResponse.json({ success: false, message: `Too many files. Max ${MAX_FILES}` }, { status: 400 })
     }
 
-    // Compute a stable upload directory. Next.js sometimes infers the wrong root in dev on Windows/OneDrive.
+    // Compute a stable upload directory (development only)
     let uploadDir = path.join(process.cwd(), "public", "uploads")
     try {
       await fs.mkdir(uploadDir, { recursive: true })
@@ -167,7 +176,7 @@ export async function POST(req: Request) {
       if (cloudinary) {
         const uploadedUrl = await new Promise<string>((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
-            { folder: "uploads", resource_type: "image" },
+            { folder: "uploads", resource_type: "auto" },
             (error: unknown, result: { secure_url?: string } | undefined) => {
               if (error || !result || !result.secure_url) return reject(error || new Error("Upload failed"))
               return resolve(result.secure_url)
@@ -177,6 +186,9 @@ export async function POST(req: Request) {
         })
         urls.push(uploadedUrl)
       } else {
+        if (process.env.NODE_ENV === "production") {
+          return NextResponse.json({ success: false, message: "Upload service not available" }, { status: 500 })
+        }
         const safeName = (file.name || "file").replace(/[^a-zA-Z0-9_.-]/g, "_")
         const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}_${safeName}`
         const filepath = path.join(uploadDir, filename)
