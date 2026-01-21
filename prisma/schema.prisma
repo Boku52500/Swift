@@ -1,0 +1,156 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  role          Role      @default(DEALER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  dealerProfile Dealer?
+  dealerStats   DealerStats?
+  cars          Car[]
+}
+
+model DealerStats {
+  id                String   @id @default(cuid())
+  dealer            User     @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  dealerId          String   @unique
+  totalCars         Int      @default(0)
+  arrivedCars       Int      @default(0)
+  notInWarehouse    Int      @default(0)
+  reservedContainer Int      @default(0)
+  loadedInContainer Int      @default(0)
+  unloadedCars      Int      @default(0)
+  totalInvoices     Int      @default(0)
+  paidInvoices      Int      @default(0)
+  unpaidInvoices    Int      @default(0)
+  invoiceBalance    Float    @default(0)
+  updatedAt         DateTime @updatedAt
+}
+
+model Dealer {
+  id            String    @id @default(cuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String    @unique
+  companyName   String?
+  phone         String?
+  address       String?
+  transportMarkup Float   @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Car {
+  id                String    @id @default(cuid())
+  vin               String    @unique
+  make              String
+  model             String
+  year              Int
+  lotNumber         String?
+  auction           String?
+  purchasePrice     Float
+  transportPrice    Float
+  buyer             String?
+  receiver          String?
+  location          String?
+  notes             String?
+  images            String[]  // Array of image URLs
+  invoices          Invoice[] // Relation to invoices
+  dealer            User      @relation(fields: [dealerId], references: [id])
+  dealerId          String
+  status            CarStatus @default(PENDING)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  transportInfo     TransportInfo?
+}
+
+model TransportInfo {
+  id                String    @id @default(cuid())
+  car               Car       @relation(fields: [carId], references: [id])
+  carId             String    @unique
+  pickupDate        DateTime?
+  warehouseArrivalDate DateTime?
+  loadingDate       DateTime?
+  dispatchDate      DateTime?
+  arrivalDate       DateTime?
+  reservationNumber String?
+  containerNumber   String?
+  shiplineName      String?
+  trackingUrl       String?
+  status            TransportStatus @default(PENDING)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  fileUrl       String    // URL to stored invoice file
+  amount        Float
+  isPaid        Boolean   @default(false)
+  car           Car       @relation(fields: [carId], references: [id])
+  carId         String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  ADMIN
+  DEALER
+}
+
+enum CarStatus {
+  PENDING
+  AT_AUCTION
+  IN_TRANSIT
+  AT_PORT
+  SHIPPED
+  ARRIVED
+  DELIVERED
+}
+
+enum TransportStatus {
+  PENDING
+  IN_TRANSIT
+  ARRIVED_AT_WAREHOUSE
+  CONTAINER_RESERVED
+  LOADED
+  DISPATCHED
+  ARRIVED
+}
+
+// Popular cars shown on homepage, managed by admin
+enum PopularCategory {
+  UNDER_5000
+  UNDER_10000
+  UNDER_15000
+  UNDER_20000
+}
+
+model PopularCar {
+  id         String          @id @default(cuid())
+  name       String
+  year       Int
+  price      Int
+  category   PopularCategory
+  imageUrl   String?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model PopularCategoryConfig {
+  id        String           @id @default(cuid())
+  category  PopularCategory  @unique
+  imageUrl  String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}

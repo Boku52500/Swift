@@ -1,0 +1,68 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  @font-face {
+    font-family: 'BPG QuadroSquare';
+    src: url('/fonts/bpg_quadrosquare_caps_2013.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  body {
+    background-color: theme('colors.white');
+    color: theme('colors.neutral.900');
+    font-family: 'BPG QuadroSquare', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: theme('colors.neutral.950');
+      color: theme('colors.white');
+    }
+  }
+}
+
+/* Admin form overrides: make fields white with black text */
+.admin-scope input,
+.admin-scope select,
+.admin-scope textarea {
+  background-color: #ffffff !important;
+  color: #0a0a0a !important; /* neutral-900 */
+  border-color: #e5e7eb !important; /* neutral-200/300 */
+}
+
+/* Radix Select Trigger (dealer/status) */
+.admin-scope [role="combobox"] {
+  background-color: #ffffff !important;
+  color: #0a0a0a !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.admin-scope input::placeholder,
+.admin-scope textarea::placeholder {
+  color: #6b7280; /* neutral-500 */
+  opacity: 1;
+}
+
+/* File input button visibility */
+.admin-scope input[type="file"]::file-selector-button {
+  color: #0a0a0a;
+  background-color: #f3f4f6; /* neutral-100 */
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+/* WebKit/Safari */
+.admin-scope input[type="file"]::-webkit-file-upload-button {
+  color: #0a0a0a;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}

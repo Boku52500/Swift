@@ -1,0 +1,75 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { signIn } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+
+export default function DealerLoginPage() {
+  const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error")
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const formData = new FormData(e.currentTarget)
+      await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        callbackUrl: "/dealer",
+        redirect: true
+      })
+    } catch (error) {
+      console.error("Login error:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+      <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold mb-2">დილერის გვერდი</h1>
+          <p className="text-neutral-600">გთხოვთ შეიყვანოთ თქვენი მონაცემები</p>
+          {error && (
+            <p className="mt-4 text-sm text-red-600">არასწორი მონაცემები</p>
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="email">ელ. ფოსტა</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="თქვენი ელ. ფოსტა"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">პაროლი</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="თქვენი პაროლი"
+              required
+            />
+          </div>
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "შესვლა..." : "შესვლა"}
+          </Button>
+        </form>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,201 @@
+import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return NextResponse.json({ 
+        success: false,
+        message: "Unauthorized" 
+      }, { status: 401 })
+    }
+
+    // Get query parameters
+    const url = new URL(req.url)
+    const status = url.searchParams.get("status")
+    const dealerId = url.searchParams.get("dealerId")
+    const vin = url.searchParams.get("vin")
+    const lotNumber = url.searchParams.get("lotNumber")
+    const name = url.searchParams.get("name")
+
+    // Build where clause
+    const where: any = {}
+    if (status) {
+      where.status = status
+    }
+    if (dealerId) {
+      where.dealerId = dealerId
+    }
+    if (vin) {
+      where.vin = { contains: vin, mode: "insensitive" }
+    }
+    if (lotNumber) {
+      where.lotNumber = { contains: lotNumber, mode: "insensitive" }
+    }
+    if (name) {
+      const or: any[] = [
+        { make: { contains: name, mode: "insensitive" } },
+        { model: { contains: name, mode: "insensitive" } },
+      ]
+      const yr = Number(name)
+      if (Number.isFinite(yr)) {
+        or.push({ year: yr })
+      }
+      where.OR = or
+    }
+
+    const cars = await prisma.car.findMany({
+      where,
+      include: {
+        dealer: {
+          select: {
+            email: true,
+            dealerProfile: true
+          }
+        },
+        transportInfo: true,
+        invoices: {
+          select: {
+            id: true,
+            amount: true,
+            isPaid: true,
+            fileUrl: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: cars
+    })
+  } catch (error) {
+    console.error("[CARS_GET]", error)
+    return NextResponse.json({ 
+      success: false,
+      message: "Failed to fetch cars",
+      details: error instanceof Error ? error.message : "Unknown error"
+    }, { status: 500 })
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== "ADMIN") {
+      return NextResponse.json({ 
+        success: false,
+        message: "Unauthorized" 
+      }, { status: 401 })
+    }
+
+    const body = await req.json()
+    const { 
+      vin,
+      make,
+      model,
+      year,
+      lotNumber,
+      auction,
+      purchasePrice,
+      transportPrice,
+      dealerId,
+      buyer,
+      receiver,
+      location,
+      notes,
+      images = [],
+      status: inputStatus,
+      invoices: invoiceItems = [],
+    } = body
+
+    // Validate required fields
+    if (!vin || !make || !model || !year || !dealerId || !purchasePrice || !transportPrice) {
+      return NextResponse.json({ 
+        success: false,
+        message: "Missing required fields" 
+      }, { status: 400 })
+    }
+
+    // Create base car first
+    const transportInfoInput = (body as any).transportInfo
+    const allowedStatuses = new Set(["PENDING","AT_AUCTION","IN_TRANSIT","AT_PORT","SHIPPED","ARRIVED","DELIVERED"])
+    const status = typeof inputStatus === "string" && allowedStatuses.has(inputStatus) ? inputStatus : "PENDING"
+    const createdCar = await prisma.car.create({
+      data: ({
+        vin,
+        make,
+        model,
+        year,
+        lotNumber,
+        auction,
+        purchasePrice,
+        transportPrice,
+        dealer: { connect: { id: dealerId } },
+        buyer,
+        receiver,
+        location,
+        notes,
+        images,
+        status,
+      }) as any,
+    })
+
+    // Optionally create initial transport info
+    if (transportInfoInput && typeof transportInfoInput === "object") {
+      await (prisma as any).transportInfo.create({
+        data: {
+          carId: createdCar.id,
+          pickupDate: transportInfoInput.pickupDate ? new Date(transportInfoInput.pickupDate) : null,
+          warehouseArrivalDate: transportInfoInput.warehouseArrivalDate ? new Date(transportInfoInput.warehouseArrivalDate) : null,
+          loadingDate: transportInfoInput.loadingDate ? new Date(transportInfoInput.loadingDate) : null,
+          dispatchDate: transportInfoInput.dispatchDate ? new Date(transportInfoInput.dispatchDate) : null,
+          arrivalDate: transportInfoInput.arrivalDate ? new Date(transportInfoInput.arrivalDate) : null,
+          reservationNumber: transportInfoInput.reservationNumber ?? null,
+          containerNumber: transportInfoInput.containerNumber ?? null,
+          shiplineName: transportInfoInput.shiplineName ?? null,
+          trackingUrl: transportInfoInput.trackingUrl ?? null,
+          status: "PENDING"
+        }
+      })
+    }
+
+    // Create invoices if provided
+    if (Array.isArray(invoiceItems) && invoiceItems.length > 0) {
+      const toCreate = invoiceItems
+        .filter((i: any) => i && typeof i.amount === "number" && i.fileUrl)
+        .map((i: any) => ({ carId: createdCar.id, amount: i.amount, isPaid: !!i.isPaid, fileUrl: i.fileUrl }))
+      if (toCreate.length > 0) {
+        await (prisma as any).invoice.createMany({ data: toCreate })
+      }
+    }
+
+    // Reload with includes for response
+    const car = await prisma.car.findUnique({
+      where: { id: createdCar.id },
+      include: {
+        dealer: { include: { dealerProfile: true } },
+        transportInfo: true,
+        invoices: { select: { id: true, amount: true, isPaid: true, fileUrl: true } },
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: car
+    })
+  } catch (error) {
+    console.error("[CAR_CREATE]", error)
+    return NextResponse.json({ 
+      success: false,
+      message: "Failed to create car",
+      details: error instanceof Error ? error.message : "Unknown error"
+    }, { status: 500 })
+  }
+}
