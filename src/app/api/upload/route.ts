@@ -155,26 +155,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: `Too many files. Max ${MAX_FILES}` }, { status: 400 })
     }
 
-    // Compute a stable upload directory (development only)
-    let uploadDir = path.join(process.cwd(), "public", "uploads")
-    try {
-      await fs.mkdir(uploadDir, { recursive: true })
-    } catch {
-      // ignore, try fallback
-    }
-    // If the resolved dir isn't under the actual project, fall back to the known project path.
-    if (!uploadDir.replace(/\\/g, "/").includes("swift-auto-import/public/uploads")) {
-      const fallbackProject = path.join(
-        process.env.USERPROFILE || process.env.HOME || "",
-        "OneDrive",
-        "Desktop",
-        "Swift Site",
-        "swift-auto-import"
-      )
-      uploadDir = path.join(fallbackProject, "public", "uploads")
-      await fs.mkdir(uploadDir, { recursive: true })
-    }
-
     const urls: string[] = []
 
     let totalBytes = 0
@@ -214,6 +194,29 @@ export async function POST(req: Request) {
         if (process.env.NODE_ENV === "production") {
           return NextResponse.json({ success: false, message: "Upload service not available" }, { status: 500 })
         }
+        // Compute a stable upload directory (development only)
+        let uploadDir = path.join(process.cwd(), "public", "uploads")
+        try {
+          await fs.mkdir(uploadDir, { recursive: true })
+        } catch {
+          // ignore, try fallback
+        }
+        // If the resolved dir isn't under the actual project, fall back to the known Windows dev path.
+        if (!uploadDir.replace(/\\/g, "/").includes("swift-auto-import/public/uploads")) {
+          const base = process.env.USERPROFILE || process.env.HOME
+          if (base) {
+            const fallbackProject = path.join(
+              base,
+              "OneDrive",
+              "Desktop",
+              "Swift Site",
+              "swift-auto-import"
+            )
+            uploadDir = path.join(fallbackProject, "public", "uploads")
+            try { await fs.mkdir(uploadDir, { recursive: true }) } catch {}
+          }
+        }
+
         const safeName = (file.name || "file").replace(/[^a-zA-Z0-9_.-]/g, "_")
         const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}_${safeName}`
         const filepath = path.join(uploadDir, filename)
