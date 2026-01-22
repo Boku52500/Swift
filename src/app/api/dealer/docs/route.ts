@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { promises as fs } from "fs"
 import path from "path"
-import { redactError } from "@/lib/security"
+import { redactError, isDev } from "@/lib/security"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -14,6 +14,17 @@ const MAX_EXCEL_BYTES = 10 * 1024 * 1024 // 10MB
 const CACHE_TTL_MS = 10 * 60 * 1000 // 10 minutes
 type ParsedDocs = { items: Array<{ id: string; title: string; express: string; regular: string }>; meta: Array<{ sheet: string; headers: string[]; mapped: { titleIdx: number; expressIdx: number; regularIdx: number } }> }
 const parsedCache = new Map<string, { ts: number; value: ParsedDocs }>()
+
+// Development fallback dataset when Excel source is not available locally
+const DEV_FALLBACK_DOCS: ParsedDocs = {
+  items: [
+    { id: "Bill of Sale", title: "Bill of Sale (შეძენის დოკუმენტი)", express: "უპრობლემოდ", regular: "უპრობლემოდ" },
+    { id: "Title", title: "Title (ტაიტლი)", express: "პროცესში", regular: "პროცესში" },
+    { id: "BOL", title: "BOL (გადაზიდვის დოკუმენტი)", express: "კი", regular: "კი" },
+    { id: "Invoice", title: "Invoice (ინვოისი)", express: "კი", regular: "კი" },
+  ],
+  meta: [],
+}
 
 function getAllowedHosts(reqHost?: string | null): Set<string> {
   const defaults = ["swiftautoimport.ge", "res.cloudinary.com"]
@@ -105,7 +116,12 @@ export async function GET(req: Request) {
     }
 
     const bytes = await readWorkbookBytes(origin, host)
-    if (!bytes) return NextResponse.json({ success: false, message: "Excel file not found" }, { status: 404 })
+    if (!bytes) {
+      if (isDev()) {
+        return NextResponse.json({ success: true, ...DEV_FALLBACK_DOCS })
+      }
+      return NextResponse.json({ success: false, message: "Excel file not found" }, { status: 404 })
+    }
 
     // Dynamic import on server
     // eslint-disable-next-line @typescript-eslint/no-var-requires
