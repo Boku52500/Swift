@@ -30,8 +30,25 @@ const config = {
   async redirects() {
     return []
   },
+  async rewrites() {
+    return [
+      // Ensure Google and browsers can fetch /favicon.ico even if we store it under /images
+      {
+        source: '/favicon.ico',
+        destination: '/images/favicon.png',
+      },
+    ]
+  },
   async headers() {
     return [
+      {
+        source: '/favicon.ico',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          // Allow cross-origin consumption by crawlers/browsers rendering in different origins
+          { key: 'Cross-Origin-Resource-Policy', value: 'cross-origin' },
+        ],
+      },
       {
         source: '/:path*',
         headers: [

@@ -17,6 +17,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ef4444" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/images/favicon.png" />
         <link rel="shortcut icon" href="/images/favicon.png" />
         <link rel="manifest" href="/manifest.json" />
