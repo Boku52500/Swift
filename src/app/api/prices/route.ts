@@ -46,6 +46,90 @@ async function fetchWithTimeout(url: string, ms: number): Promise<Response> {
   }
 }
 
+// --- Parsing helpers (tolerant to header naming and spacing) ---
+function normalizeHeaderLabel(h: any): string {
+  const s = String(h ?? "").toLowerCase().trim()
+  // Drop punctuation/whitespace to allow fuzzy includes matching in Georgian/English
+  return s.replace(/[^a-z0-9ა-ჰ]+/g, "")
+}
+
+function parseWorksheet(ws: XLSX.WorkSheet): Array<{ location: string; port: string; price: string }> {
+  // Try object rows first
+  const objRows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true }) as any[]
+  if (Array.isArray(objRows) && objRows.length) {
+    const headers = Object.keys(objRows[0] || {})
+    const normHeaders = headers.map(normalizeHeaderLabel)
+    const headerTokens = (tokens: string[]) => (h: string) => tokens.some(t => h.includes(t))
+    const findIdx = (pred: (h: string) => boolean) => normHeaders.findIndex(pred)
+
+    const locIdx = findIdx(headerTokens(["ლოკ", "location", "loc", "city", "state"]))
+    const portIdx = findIdx(headerTokens(["პორტ", "port", "loading", "ჩატვირთვის"]))
+    const priceIdx = findIdx(headerTokens(["ფას", "price", "cost", "usd"]))
+
+    const byIndex = (row: any, idx: number) => {
+      if (idx < 0) return ""
+      const key = headers[idx]
+      return String(row[key] ?? "").toString().trim()
+    }
+
+    let data = objRows.map((r) => ({
+      location: byIndex(r, locIdx),
+      port: byIndex(r, portIdx),
+      price: byIndex(r, priceIdx),
+    })).filter(r => r.location || r.port || r.price)
+
+    // If indices not found, fall back to AOA below
+    if (data.length) return data
+  }
+
+  // Fallback: AOA parsing with tolerant header detection
+  const rows = XLSX.utils.sheet_to_json<string[]>(ws, { header: 1, defval: "" }) as string[][]
+  if (!Array.isArray(rows) || rows.length === 0) return []
+  const headers = (rows[0] || []).map((h) => String(h ?? ""))
+  const normHeaders = headers.map(normalizeHeaderLabel)
+  const headerTokens = (tokens: string[]) => (h: string) => tokens.some(t => h.includes(t))
+  const findIdx = (pred: (h: string) => boolean) => normHeaders.findIndex(pred)
+
+  let locIdx = findIdx(headerTokens(["ლოკ", "location", "loc", "city", "state"]))
+  let portIdx = findIdx(headerTokens(["პორტ", "port", "loading", "ჩატვირთვის"]))
+  let priceIdx = findIdx(headerTokens(["ფას", "price", "cost", "usd"]))
+  const foundByHeader = (locIdx >= 0) || (portIdx >= 0) || (priceIdx >= 0)
+
+  // If still not found, attempt positional heuristic (first three non-empty columns)
+  if (locIdx < 0 || portIdx < 0 || priceIdx < 0) {
+    const firstDataRow = rows[1] || []
+    const nonEmptyIdxs = firstDataRow.map((v, i) => ({ i, v: String(v || "").trim() })).filter(x => x.v).map(x => x.i)
+    if (nonEmptyIdxs.length >= 3) {
+      locIdx = locIdx >= 0 ? locIdx : nonEmptyIdxs[0]
+      portIdx = portIdx >= 0 ? portIdx : nonEmptyIdxs[1]
+      priceIdx = priceIdx >= 0 ? priceIdx : nonEmptyIdxs[2]
+    }
+  }
+
+  // If we found header indices by header tokens, skip first row as header. Otherwise treat first row as data.
+  const start = foundByHeader && rows.length > 1 ? 1 : 0
+  const data = rows.slice(start).map((r) => ({
+    location: locIdx >= 0 ? String(r[locIdx] || "").trim() : "",
+    port: portIdx >= 0 ? String(r[portIdx] || "").trim() : "",
+    price: priceIdx >= 0 ? String(r[priceIdx] || "").toString().trim() : "",
+  })).filter(r => r.location || r.port || r.price)
+
+  return data
+}
+
+function parsePricesBuffer(buf: Buffer): Array<{ location: string; port: string; price: string }> {
+  const wb = XLSX.read(buf, { type: "buffer" })
+  const sheetNames = Array.isArray(wb.SheetNames) ? wb.SheetNames : []
+  const out: Array<{ location: string; port: string; price: string }> = []
+  for (const sn of sheetNames) {
+    const ws = wb.Sheets[sn]
+    if (!ws) continue
+    const rows = parseWorksheet(ws)
+    for (const r of rows) out.push(r)
+  }
+  return out
+}
+
 export async function GET(req: Request) {
   try {
     // 1) Prefer remote Excel if configured (works on Vercel)
@@ -62,42 +146,7 @@ export async function GET(req: Request) {
           }
           const ab = await res.arrayBuffer()
           if (ab.byteLength && ab.byteLength <= MAX_EXCEL_BYTES) {
-            const wb = XLSX.read(Buffer.from(ab), { type: "buffer" })
-            const sheetName = wb.SheetNames[0]
-            if (!sheetName) {
-              if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
-              return NextResponse.json({ success: true, data: [] })
-            }
-            const ws = wb.Sheets[sheetName]
-            const objRows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true }) as any[]
-            let data = objRows.map((r) => ({
-              location: (r["ლოკაცია"] ?? r["location"] ?? "").toString().trim(),
-              port: (r["ჩატვირთვის პორტი"] ?? r["ჩატვირთვისპორტი"] ?? r["port"] ?? r["loading port"] ?? "").toString().trim(),
-              price: (r["ფასი"] ?? r["price"] ?? "").toString().trim(),
-            })).filter((r) => r.location || r.port || r.price)
-
-            if (!data.length) {
-              const rows = XLSX.utils.sheet_to_json<string[]>(ws, { header: 1, defval: "" }) as string[][]
-              if (!rows.length) {
-                if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
-                return NextResponse.json({ success: true, data: [] })
-              }
-              const headers = (rows[0] || []).map((h) => String(h || "").trim().toLowerCase())
-              const findCol = (candidates: string[]) => {
-                const idx = headers.findIndex((h) => candidates.some((c) => h === c || h.replace(/\s+/g, "") === c.replace(/\s+/g, "")))
-                return idx >= 0 ? idx : -1
-              }
-              const locIdx = findCol(["ლოკაცია", "location"]) 
-              const portIdx = findCol(["ჩატვირთვის პორტი", "ჩატვირთვისპორტი", "port", "loading port"]) 
-              const priceIdx = findCol(["ფასი", "price"]) 
-
-              data = rows.slice(1).map((r) => ({
-                location: locIdx >= 0 ? String(r[locIdx] || "").trim() : "",
-                port: portIdx >= 0 ? String(r[portIdx] || "").trim() : "",
-                price: priceIdx >= 0 ? String(r[priceIdx] || "").toString().trim() : "",
-              })).filter((r) => r.location || r.port || r.price)
-            }
-
+            const data = parsePricesBuffer(Buffer.from(ab))
             if (!data.length && isDev()) {
               return NextResponse.json({ success: true, data: DEV_FALLBACK })
             }
@@ -139,48 +188,7 @@ export async function GET(req: Request) {
       }
       return NextResponse.json({ success: false, message: `Cannot access file ${filePath}: ${err?.message || err}` }, { status: 500 })
     }
-    const wb = XLSX.read(fileBuffer, { type: "buffer" })
-    const sheetName = wb.SheetNames[0]
-    if (!sheetName) {
-      if (isDev()) {
-        return NextResponse.json({ success: true, data: DEV_FALLBACK })
-      }
-      return NextResponse.json({ success: true, data: [] })
-    }
-
-    const ws = wb.Sheets[sheetName]
-    // First try: object mapping (works like our CLI script)
-    const objRows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: true }) as any[]
-    let data = objRows.map((r) => ({
-      location: (r["ლოკაცია"] ?? r["location"] ?? "").toString().trim(),
-      port: (r["ჩატვირთვის პორტი"] ?? r["ჩატვირთვისპორტი"] ?? r["port"] ?? r["loading port"] ?? "").toString().trim(),
-      price: (r["ფასი"] ?? r["price"] ?? "").toString().trim(),
-    })).filter((r) => r.location || r.port || r.price)
-
-    // Fallback: AOA with header tolerance if object mapping yields empty
-    if (!data.length) {
-      const rows = XLSX.utils.sheet_to_json<string[]>(ws, { header: 1, defval: "" }) as string[][]
-      if (!rows.length) {
-        if (isDev()) {
-          return NextResponse.json({ success: true, data: DEV_FALLBACK })
-        }
-        return NextResponse.json({ success: true, data: [] })
-      }
-      const headers = (rows[0] || []).map((h) => String(h || "").trim().toLowerCase())
-      const findCol = (candidates: string[]) => {
-        const idx = headers.findIndex((h) => candidates.some((c) => h === c || h.replace(/\s+/g, "") === c.replace(/\s+/g, "")))
-        return idx >= 0 ? idx : -1
-      }
-      const locIdx = findCol(["ლოკაცია", "location"]) 
-      const portIdx = findCol(["ჩატვირთვის პორტი", "ჩატვირთვისპორტი", "port", "loading port"]) 
-      const priceIdx = findCol(["ფასი", "price"]) 
-
-      data = rows.slice(1).map((r) => ({
-        location: locIdx >= 0 ? String(r[locIdx] || "").trim() : "",
-        port: portIdx >= 0 ? String(r[portIdx] || "").trim() : "",
-        price: priceIdx >= 0 ? String(r[priceIdx] || "").toString().trim() : "",
-      })).filter((r) => r.location || r.port || r.price)
-    }
+    const data = parsePricesBuffer(fileBuffer)
 
     if (!data.length && isDev()) {
       return NextResponse.json({ success: true, data: DEV_FALLBACK })
