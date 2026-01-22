@@ -137,23 +137,34 @@ export async function GET(req: Request) {
     const remote = process.env.PRICES_EXCEL_URL || process.env.PRICES_FILE_URL || ""
     if (remote) {
       const allowed = getAllowedHosts(host)
-      if (isHostAllowed(remote, allowed)) {
-        const res = await fetchWithTimeout(remote, 8000)
-        if (res.ok) {
-          const clen = Number(res.headers.get("content-length") || "0")
-          if (clen && clen > MAX_EXCEL_BYTES) {
-            if (!isDev()) return NextResponse.json({ success: false, message: "Remote file too large" }, { status: 413 })
-          }
-          const ab = await res.arrayBuffer()
-          if (ab.byteLength && ab.byteLength <= MAX_EXCEL_BYTES) {
-            const data = parsePricesBuffer(Buffer.from(ab))
-            if (!data.length && isDev()) {
-              return NextResponse.json({ success: true, data: DEV_FALLBACK })
-            }
-            return NextResponse.json({ success: true, data })
-          }
-        }
+      if (!isHostAllowed(remote, allowed)) {
+        return NextResponse.json({ success: false, message: "Remote host not allowed" }, { status: 400 })
       }
+      const res = await fetchWithTimeout(remote, 15000)
+      if (!res.ok) {
+        if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
+        return NextResponse.json({ success: false, message: `Remote prices fetch failed (${res.status})` }, { status: 502 })
+      }
+      const clen = Number(res.headers.get("content-length") || "0")
+      if (clen && clen > MAX_EXCEL_BYTES) {
+        if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
+        return NextResponse.json({ success: false, message: "Remote file too large" }, { status: 413 })
+      }
+      const ab = await res.arrayBuffer()
+      if (!ab.byteLength) {
+        if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
+        return NextResponse.json({ success: false, message: "Remote file was empty" }, { status: 502 })
+      }
+      if (ab.byteLength > MAX_EXCEL_BYTES) {
+        if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
+        return NextResponse.json({ success: false, message: "Remote file too large" }, { status: 413 })
+      }
+      const data = parsePricesBuffer(Buffer.from(ab))
+      if (!data.length) {
+        if (isDev()) return NextResponse.json({ success: true, data: DEV_FALLBACK })
+        return NextResponse.json({ success: false, message: "No price rows found in spreadsheet" }, { status: 422 })
+      }
+      return NextResponse.json({ success: true, data })
     }
 
     // 2) Local file under /public/uploads (primarily for local/dev)
