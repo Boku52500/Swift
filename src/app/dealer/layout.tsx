@@ -240,8 +240,8 @@ export default function DealerLayout({
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button aria-label="ტრანსპორტირების ფასი" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <Ship className="h-2 w-2 md:h-2 md:w-2" />
+                <Button aria-label="ტრანსპორტირების ფასი" variant="outline" size="icon" className="h-8 w-8 bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-0 md:gap-2 md:h-12 md:w-auto md:px-4">
+                  <Ship className="h-5 w-5 md:h-4 md:w-4" />
                   <span className="hidden md:inline">ტრანსპორტირების ფასი</span>
                 </Button>
               </DialogTrigger>
@@ -332,8 +332,8 @@ export default function DealerLayout({
 
             <Dialog open={docsOpen} onOpenChange={setDocsOpen}>
               <DialogTrigger asChild>
-                <Button aria-label="საბუთები" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <FileText className="h-2 w-2 md:h-2 md:w-2" />
+                <Button aria-label="საბუთები" variant="outline" size="icon" className="h-8 w-8 bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-0 md:gap-2 md:h-12 md:w-auto md:px-4">
+                  <FileText className="h-5 w-5 md:h-4 md:w-4" />
                   <span className="hidden md:inline">საბუთები</span>
                 </Button>
               </DialogTrigger>
@@ -443,8 +443,8 @@ export default function DealerLayout({
 
             <Dialog open={calcOpen} onOpenChange={setCalcOpen}>
               <DialogTrigger asChild>
-                <Button aria-label="აუქციონის დანამატის კალკულატორი" variant="outline" className="bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-2">
-                  <Calculator className="h-2 w-2 md:h-2 md:w-2" />
+                <Button aria-label="აუქციონის დანამატის კალკულატორი" variant="outline" size="icon" className="h-8 w-8 bg-white border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors gap-0 md:gap-2 md:h-12 md:w-auto md:px-4">
+                  <Calculator className="h-5 w-5 md:h-4 md:w-4" />
                   <span className="hidden md:inline">აუქციონის დანამატის კალკულატორი</span>
                 </Button>
               </DialogTrigger>
@@ -458,11 +458,12 @@ export default function DealerLayout({
 
             <Button 
               variant="ghost"
-              className="text-neutral-600 hover:text-red-600 hover:bg-red-50 gap-2"
+              size="icon"
+              className="h-8 w-8 text-neutral-600 hover:text-red-600 hover:bg-red-50 gap-0 md:gap-2 md:h-12 md:w-auto md:px-4"
               onClick={() => signOut({ callbackUrl: "/" })}
               aria-label="გასვლა"
             >
-              <LogOut className="h-2 w-2 md:h-2 md:w-2" />
+              <LogOut className="h-5 w-5 md:h-4 md:w-4" />
               <span className="hidden md:inline">გასვლა</span>
             </Button>
           </div>
