@@ -35,7 +35,7 @@ const config = {
       // Ensure Google and browsers can fetch /favicon.ico even if we store it under /images
       {
         source: '/favicon.ico',
-        destination: '/images/favicon.png',
+        destination: '/images/favicon.ico',
       },
     ]
   },
