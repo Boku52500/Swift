@@ -3,7 +3,7 @@ import { translations } from './i18n'
 
 export const siteConfig = {
   name: 'Swift Auto Import',
-  url: 'https://swiftautoimport.ge',
+  url: 'https://swiftauto.ge',
   ogImage: '/images/hero.jpg',
   description: translations.meta.description,
   links: {
