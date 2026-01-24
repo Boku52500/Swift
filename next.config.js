@@ -13,7 +13,7 @@ const config = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'swiftautoimport.ge',
+        hostname: 'swiftauto.ge',
       },
       {
         protocol: 'https',
@@ -61,7 +61,7 @@ const config = {
               "form-action 'self'",
               "script-src 'self' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://swiftautoimport.ge https://res.cloudinary.com",
+              "img-src 'self' data: blob: https://swiftauto.ge https://res.cloudinary.com",
               "font-src 'self' data:",
               "connect-src 'self'",
               "frame-ancestors 'self'",
@@ -103,11 +103,24 @@ const config = {
         ],
       },
       {
+        source: '/_next/:path*',
+        headers: [
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin'
+          }
+        ]
+      },
+      {
         source: '/:all*(svg|jpg|jpeg|png|webp|avif|gif)',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin'
           }
         ]
       },
@@ -117,6 +130,10 @@ const config = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin'
           }
         ]
       }
