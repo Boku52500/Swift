@@ -96,7 +96,7 @@ export default function DealerLayout({
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch("/api/dealer/transport-markup")
+        const res = await fetch("/api/dealer/transport-markup", { cache: "no-store" })
         const data = await res.json()
         if (data?.success && typeof data.data?.transportMarkup === "number") {
           setTransportMarkup(data.data.transportMarkup)
@@ -104,6 +104,20 @@ export default function DealerLayout({
       } catch {}
     })()
   }, [])
+
+  // Refresh markup whenever the Transport Prices dialog opens to ensure latest value
+  useEffect(() => {
+    if (!open) return
+    ;(async () => {
+      try {
+        const res = await fetch("/api/dealer/transport-markup", { cache: "no-store" })
+        const data = await res.json()
+        if (data?.success && typeof data.data?.transportMarkup === "number") {
+          setTransportMarkup(data.data.transportMarkup)
+        }
+      } catch {}
+    })()
+  }, [open])
 
   // Hide dropdown whenever the dialog closes
   useEffect(() => {
