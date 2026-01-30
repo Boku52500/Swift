@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Phone, Mail, MapPin } from 'lucide-react'
-
+import Script from 'next/script'
 export function Footer() {
   return (
     <footer className="bg-neutral-900 text-white py-12">
@@ -84,6 +84,25 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-neutral-800 text-center text-neutral-400">
           <p>&copy; {new Date().getFullYear()} Swift Auto Import. All rights reserved.</p>
+          <div className="mt-4">
+            {/* SAITEBI.ME */}
+            <a href="http://www.saitebi.me/" target="_blank" rel="noopener noreferrer">
+              <img
+                width={88}
+                height={31}
+                src="https://www.saitebi.me/baneri.png"
+                alt="Saitebi.me"
+                className="inline-block"
+              />
+            </a>
+            {/* / SAITEBI.ME */}
+          </div>
+          <div className="mt-4">
+            {/* TOP.GE ASYNC COUNTER CODE */}
+            <div id="top-ge-counter-container" data-site-id="118513"></div>
+            <Script src="https://counter.top.ge/counter.js" strategy="afterInteractive" />
+            {/* / END OF TOP.GE COUNTER CODE */}
+          </div>
         </div>
       </div>
     </footer>
