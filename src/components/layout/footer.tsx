@@ -84,16 +84,19 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-neutral-800 text-center text-neutral-400">
           <p>&copy; {new Date().getFullYear()} Swift Auto Import. All rights reserved.</p>
-          
-
-           
-<a href="http://www.saitebi.me/" target="_blank"><img width="88" height="31"src="https://www.saitebi.me/baneri.png" border="0" alt="Saitebi.me" /></a>
-
-                      
-            <div id="top-ge-counter-container" data-site-id="118513"></div>
-            <script async src="//counter.top.ge/counter.js"></script>
-            
-        
+          <div className="mt-4">
+            <a href="http://www.saitebi.me/" target="_blank" rel="noopener noreferrer">
+              <img
+                width={88}
+                height={31}
+                src="https://www.saitebi.me/baneri.png"
+                alt="Saitebi.me"
+                className="inline-block border-0"
+              />
+            </a>
+          </div>
+          <div id="top-ge-counter-container" data-site-id="118513"></div>
+          <Script src="https://counter.top.ge/counter.js" strategy="afterInteractive" />
         </div>
       </div>
     </footer>
