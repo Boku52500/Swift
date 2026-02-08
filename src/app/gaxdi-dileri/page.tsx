@@ -3,6 +3,7 @@
 import { CheckCircle2, TrendingUp, BadgeCheck, Users2, Building2, Handshake } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Script from 'next/script'
 
 const benefits = [
   {
@@ -57,6 +58,7 @@ const steps = [
 
 export default function BecomeDealerPage() {
   return (
+    <>
     <main>
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white">
@@ -66,7 +68,7 @@ export default function BecomeDealerPage() {
               გახდი Swift Auto-ს დილერი
             </h1>
             <p className="text-xl text-neutral-200 mb-8">
-              დაიწყეთ წარმატებული ბიზნესი ავტომობილების იმპორტის სფეროში
+              დაიწყეთ წარმატებული ბიზნესი ავტო იმპორტის სფეროში
             </p>
             <Button asChild size="lg" className="bg-red-600 hover:bg-red-700">
               <Link href="#contact">
@@ -97,6 +99,29 @@ export default function BecomeDealerPage() {
           </div>
         </div>
       </section>
+
+      <section className="py-16 bg-neutral-50">
+        <div className="container mx-auto px-4">
+          <div className="prose prose-neutral max-w-4xl mx-auto">
+            <h2>გახდი Swift Auto-ს დილერი — პარტნიორობა ზრდისთვის</h2>
+            <p>
+              ჩვენი დილერობა გაძლევთ შესაძლებლობას შექმნათ სტაბილური ბიზნესი ავტომობილების იმპორტის მიმართულებით.
+              მიიღებთ პლატფორმაზე წვდომას, ტრენინგს, მარკეტინგულ მხარდაჭერას და სანდო ლოჯისტიკას, რათა სწრაფად დაიწყოთ გაყიდვები.
+            </p>
+            <h3>რას იღებთ თანამშრომლობით</h3>
+            <ul>
+              <li>წვდომა Copart/IAAI აუქციონებზე და ბიდინგის ექსპერტული მხარდაჭერა</li>
+              <li>სრულად დოკუმენტირებული პროცესი და გამჭვირვალე ანგარიშსწორება</li>
+              <li>მარკეტინგული მასალები და ლიდების გენერაციაში დახმარება</li>
+            </ul>
+            <p>
+              დაიწყეთ უფასო კონსულტაციით და გაიგეთ, როგორ შეგვიძლია მოგცეთ სტარტი ადგილობრივ ბაზარზე.
+            </p>
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Steps Section */}
       <section className="py-16 bg-neutral-50">
@@ -156,5 +181,84 @@ export default function BecomeDealerPage() {
         </div>
       </section>
     </main>
+    <section className="py-16 bg-neutral-50">
+      <div className="container mx-auto px-4">
+        <div className="prose prose-neutral max-w-4xl mx-auto">
+          <h2>ხშირად დასმული კითხვები</h2>
+          <details>
+            <summary>რა ინვესტიციაა საჭირო დასაწყებად?</summary>
+            <p>ინვესტიცია დამოკიდებულია არჩეულ სეგმენტზე; სტარტი შესაძლებელია შედარებით მცირე ბიუჯეტითაც.</p>
+          </details>
+          <details>
+            <summary>ვიღებ თუ არა ექსკლუზიურ ტერიტორიებს?</summary>
+            <p>დიახ, წვდომა გექნებათ ყველა ექსკლუზიურ და დახურულ ტერიტორიაზე.</p>
+          </details>
+          <details>
+            <summary>რამდენ ხანი გრძელდება ონბორდინგი?</summary>
+            <p>საშუალოდ 3-7 სამუშაო დღე: ტრენინგი, ტექნიკური ჩართვა და მასალების გადაცემა.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+    <Script
+      id="faq-schema-become-dealer"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'რა ინვესტიციაა საჭირო დასაწყებად?',
+              acceptedAnswer: { '@type': 'Answer', text: 'ინვესტიცია დამოკიდებულია სეგმენტზე; შესაძლებელია მცირე ბიუჯეტით დაწყებაც.' }
+            },
+            {
+              '@type': 'Question',
+              name: 'ვიღებ თუ არა ექსკლუზიურ ტერიტორიებს?',
+              acceptedAnswer: { '@type': 'Answer', text: 'დიახ, წვდომა გექნებათ ყველა ექსკლუზიურ და დახურულ ტერიტორიაზე.' }
+            },
+            {
+              '@type': 'Question',
+              name: 'რამდენ ხანი გრძელდება ონბორდინგი?',
+              acceptedAnswer: { '@type': 'Answer', text: 'ჩვეულებრივ 3-7 სამუშაო დღე — ტრენინგი, ტექნიკური ჩართვა, მასალების გადაცემა.' }
+            },
+          ]
+        })
+      }}
+    />
+    <Script
+      id="howto-become-dealer"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          name: 'როგორ გახდეთ Swift Auto-ს დილერი — ნაბიჯ-ნაბიჯ',
+          totalTime: 'P7D',
+          step: [
+            { '@type': 'HowToStep', name: 'განაცხადი/კონტაქტი', text: 'შეავსეთ განაცხადი ან დაგვირეკეთ.' },
+            { '@type': 'HowToStep', name: 'ტრენინგი', text: 'გაიარეთ საბაზო ტრენინგი პროცესებზე.' },
+            { '@type': 'HowToStep', name: 'ხელშეკრულება', text: 'დოკუმენტაციის გაფორმება და წვდომების გაცემა.' },
+            { '@type': 'HowToStep', name: 'გაშვება', text: 'მარკეტინგული მასალები და პირველი ლიდების დამუშავება.' }
+          ]
+        })
+      }}
+    />
+    <Script
+      id="breadcrumb-become-dealer"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'მთავარი', item: 'https://swiftauto.ge/' },
+            { '@type': 'ListItem', position: 2, name: 'გახდი დილერი', item: 'https://swiftauto.ge/gaxdi-dileri' }
+          ]
+        })
+      }}
+    />
+    </>
   )
 }

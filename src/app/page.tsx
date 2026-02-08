@@ -5,6 +5,7 @@ import { ServicesSection } from '@/components/sections/services'
 import { ProcessSection } from '@/components/sections/process'
 import { CarsShowcaseSection } from '@/components/sections/manqanebi-amerikidan-texti'
 import { FAQSection } from '@/components/sections/faq'
+import { BlogScrollSection } from '@/components/sections/blog-scroll'
 import { ContactSection } from '@/components/sections/contact'
 import { SocialMediaSection } from '@/components/sections/social-media'
 
@@ -20,6 +21,7 @@ export default async function Home() {
       <PartnersSection />
       <ServicesSection />
       <ProcessSection />
+      <BlogScrollSection />
       <FAQSection />
       <ContactSection />
       <SocialMediaSection />

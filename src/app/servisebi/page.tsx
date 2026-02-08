@@ -2,6 +2,7 @@
 
 import { Car, Gavel, Ship, Clock, Shield, Users, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { ServiceSchema } from '@/components/seo/schemas'
 
 const services = [
   {
@@ -81,6 +82,7 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+      <ServiceSchema services={services.map(s => ({ title: s.title, description: s.description }))} />
     </main>
   )
 }

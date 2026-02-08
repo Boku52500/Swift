@@ -7,7 +7,10 @@ const withPWA = require('next-pwa')({
 
 /** @type {import('next').NextConfig} */
 const config = {
-  turbopack: {},
+  turbopack: {
+    // Ensure Next.js uses this project as the workspace root
+    root: __dirname,
+  },
   reactCompiler: true,
   images: {
     remotePatterns: [
@@ -67,6 +70,10 @@ const config = {
               "frame-ancestors 'self'",
               "upgrade-insecure-requests",
             ].join('; '),
+          },
+          {
+            key: 'Content-Language',
+            value: 'ka-GE'
           },
           {
             key: 'X-DNS-Prefetch-Control',

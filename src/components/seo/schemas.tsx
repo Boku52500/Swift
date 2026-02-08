@@ -28,6 +28,16 @@ export const LocalBusinessSchema = () => {
     "url": siteConfig.url,
     "telephone": siteConfig.contact.phone,
     "email": siteConfig.contact.email,
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "telephone": siteConfig.contact.phone,
+        "email": siteConfig.contact.email,
+        "contactType": "customer support",
+        "areaServed": "GE",
+        "availableLanguage": ["ka"]
+      }
+    ],
     "address": {
       "@type": "PostalAddress",
       "addressLocality": siteConfig.location.city,
@@ -42,6 +52,40 @@ export const LocalBusinessSchema = () => {
       siteConfig.links.facebook,
       siteConfig.links.instagram
     ]
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export const WebsiteSchema = () => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": siteConfig.url,
+    "name": siteConfig.name,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `https://www.google.com/search?q=site:${new URL(siteConfig.url).host}+{search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+export const PersonSchema = () => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Swift Auto Import Team",
+    "worksFor": {
+      "@type": "Organization",
+      "name": siteConfig.name,
+      "url": siteConfig.url
+    },
+    "sameAs": [
+      siteConfig.links.facebook,
+      siteConfig.links.instagram
+    ],
+    "knowsLanguage": ["ka-GE"]
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }

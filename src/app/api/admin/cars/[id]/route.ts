@@ -84,25 +84,27 @@ export async function PATCH(
     const allowedStatuses = new Set(["PENDING","AT_AUCTION","IN_TRANSIT","AT_PORT","SHIPPED","ARRIVED","DELIVERED"])
     const nextStatus = (typeof inputStatus === "string" && allowedStatuses.has(inputStatus)) ? inputStatus : undefined
 
+    const updateData: any = {
+      ...(typeof vin === 'string' ? { vin } : {}),
+      ...(typeof make === 'string' ? { make } : {}),
+      ...(typeof model === 'string' ? { model } : {}),
+      ...(Number.isInteger(year) ? { year } : {}),
+      ...(typeof lotNumber === 'string' ? { lotNumber } : {}),
+      ...(typeof auction === 'string' ? { auction } : {}),
+      ...(typeof purchasePrice === 'number' ? { purchasePrice } : {}),
+      ...(typeof transportPrice === 'number' ? { transportPrice } : {}),
+      ...(typeof dealerId === 'string' ? { dealerId } : {}),
+      ...(typeof buyer === 'string' ? { buyer } : {}),
+      ...(typeof receiver === 'string' ? { receiver } : {}),
+      ...(typeof location === 'string' ? { location } : {}),
+      ...(typeof notes === 'string' ? { notes } : {}),
+      ...(Array.isArray(images) ? { images } : {}),
+      ...(nextStatus ? { status: nextStatus } : {}),
+    }
+
     await prisma.car.update({
       where: { id },
-      data: ({
-        vin,
-        make,
-        model,
-        year,
-        lotNumber,
-        auction,
-        purchasePrice,
-        transportPrice,
-        dealerId,
-        buyer,
-        receiver,
-        location,
-        notes,
-        ...(Array.isArray(images) ? { images } : {}),
-        ...(nextStatus ? { status: nextStatus } : {}),
-      }) as any,
+      data: updateData as any,
     })
 
     // Upsert transport info if provided

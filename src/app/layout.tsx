@@ -1,8 +1,9 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { generateMetadata, siteConfig } from "@/lib/metadata";
-import { LocalBusinessSchema } from "@/components/seo/schemas";
+import { LocalBusinessSchema, WebsiteSchema, PersonSchema } from "@/components/seo/schemas";
 import { AuthProvider } from "@/components/providers/auth-provider";
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import "./globals.css";
 
 export const metadata = generateMetadata();
@@ -31,9 +32,14 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Header />
-          <main className="flex-grow pt-16">{children}</main>
+          <main className="flex-grow pt-16">
+            <Breadcrumbs />
+            {children}
+          </main>
           <Footer />
+          <WebsiteSchema />
           <LocalBusinessSchema />
+          <PersonSchema />
         </AuthProvider>
       </body>
     </html>

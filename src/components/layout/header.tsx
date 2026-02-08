@@ -106,6 +106,11 @@ export function Header() {
                   მეორადი მანქანები
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/blog" className="w-full">
+                  ბლოგი
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -194,6 +199,11 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link href="/meoradi-manqanebi" className="w-full" onClick={() => setMobileOpen(false)}>
                         მეორადი მანქანები
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/blog" className="w-full" onClick={() => setMobileOpen(false)}>
+                        ბლოგი
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

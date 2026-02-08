@@ -29,7 +29,9 @@ export function generateMetadata(): Metadata {
     keywords: translations.meta.keywords,
     metadataBase: new URL(siteConfig.url),
     alternates: {
+      canonical: '/',
       languages: {
+        'x-default': '/',
         'ka-GE': '/',
       },
     },

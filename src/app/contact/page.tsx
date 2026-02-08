@@ -1,7 +1,8 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
 import { ContactSection } from "@/components/sections/contact"
 import { siteConfig } from "@/lib/metadata"
+import Script from "next/script"
 
 export const metadata: Metadata = {
   title: "დაგვიკავშირდით - Swift Auto Import",
@@ -83,8 +84,19 @@ export default function ContactPage() {
         </div>
       </section>
 
+      
+
       {/* Contact Form Section */}
       <ContactSection />
+
+
+                  
+            
+          
+      
+    
+      
+      
     </div>
   )
 }

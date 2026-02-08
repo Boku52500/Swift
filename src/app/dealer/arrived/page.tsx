@@ -6,7 +6,7 @@ import { CarStatus } from "@prisma/client"
 import type { CarData } from "@/types/car"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { FileText, Truck, Search, X, Image } from "lucide-react"
+import { FileText, Truck, Search, X, Image, ChevronLeft, ChevronRight } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
@@ -17,6 +17,8 @@ export default function ArrivedPage() {
   const [name, setName] = useState("")
   const [vin, setVin] = useState("")
   const [lotNumber, setLotNumber] = useState("")
+  const [viewer, setViewer] = useState<{ images: string[]; index: number } | null>(null)
+  const [sheetOpenFor, setSheetOpenFor] = useState<string | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -33,6 +35,31 @@ export default function ArrivedPage() {
     }
     load()
   }, [])
+
+  // Lock body scroll and enable keyboard navigation when lightbox is open
+  useEffect(() => {
+    if (!viewer) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (!viewer) return
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setViewer(null)
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        setViewer(v => v ? { images: v.images, index: (v.index - 1 + v.images.length) % v.images.length } : v)
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        setViewer(v => v ? { images: v.images, index: (v.index + 1) % v.images.length } : v)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [viewer])
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault()
@@ -86,6 +113,59 @@ export default function ArrivedPage() {
             გასუფთავება
           </Button>
         </div>
+
+      {viewer && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center"
+          onClick={() => setViewer(null)}
+          onWheelCapture={(e) => e.preventDefault()}
+          onTouchMoveCapture={(e) => e.preventDefault()}
+          tabIndex={-1}
+        >
+          <button
+            type="button"
+            aria-label="Prev image"
+            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80"
+            onClick={(e) => {
+              e.stopPropagation()
+              setViewer((v) => v ? { images: v.images, index: (v.index - 1 + v.images.length) % v.images.length } : v)
+            }}
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={viewer.images[viewer.index]}
+            alt={`image-${viewer.index + 1}`}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-md shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            aria-label="Next image"
+            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/80"
+            onClick={(e) => {
+              e.stopPropagation()
+              setViewer((v) => v ? { images: v.images, index: (v.index + 1) % v.images.length } : v)
+            }}
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            aria-label="Close"
+            className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full bg-black/60 text-white hover:bg-black/80"
+            onClick={(e) => {
+              e.stopPropagation()
+              setViewer(null)
+            }}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
       </form>
 
       <div className="border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
@@ -113,27 +193,27 @@ export default function ArrivedPage() {
                 <TableCell>{car.lotNumber || "-"}</TableCell>
                 <TableCell>
                   {car.images && car.images.length > 0 ? (
-                    <Sheet>
-                      <SheetTrigger asChild>
-                        <button className="block">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={car.images[0]} alt={`${car.name}-main`} className="h-14 w-20 object-cover rounded-md border border-neutral-200 hover:opacity-90 transition cursor-zoom-in shadow-sm" />
-                        </button>
-                      </SheetTrigger>
-                      <SheetContent side="right" className="sm:max-w-xl overflow-y-auto">
-                        <SheetHeader>
-                          <SheetTitle>ფოტოები</SheetTitle>
-                        </SheetHeader>
-                        <div className="mt-4 grid grid-cols-2 gap-2">
-                          {car.images.map((src, i) => (
-                            <a key={i} href={src} target="_blank" rel="noreferrer" className="block">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={src} alt={`${car.name}-${i}`} className="w-full aspect-video object-cover rounded-md border border-neutral-200 hover:opacity-90 transition cursor-zoom-in shadow-sm" />
-                            </a>
-                          ))}
-                        </div>
-                      </SheetContent>
-                    </Sheet>
+                    <>
+                      <button className="block" onClick={() => setSheetOpenFor(car.id)}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={car.images[0]} alt={`${car.name}-main`} className="h-14 w-20 object-cover rounded-md border border-neutral-200 hover:opacity-90 transition cursor-zoom-in shadow-sm" />
+                      </button>
+                      <Sheet open={sheetOpenFor === car.id} onOpenChange={(o) => setSheetOpenFor(o ? car.id : null)}>
+                        <SheetContent side="right" className="sm:max-w-xl overflow-y-auto">
+                          <SheetHeader>
+                            <SheetTitle>ფოტოები</SheetTitle>
+                          </SheetHeader>
+                          <div className="mt-4 grid grid-cols-2 gap-2">
+                            {car.images.map((src, i) => (
+                              <button key={i} className="block" onClick={() => { setViewer({ images: car.images, index: i }); setSheetOpenFor(null); }}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={src} alt={`${car.name}-${i}`} className="w-full aspect-video object-cover rounded-md border border-neutral-200 hover:opacity-90 transition cursor-zoom-in shadow-sm" />
+                              </button>
+                            ))}
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    </>
                   ) : (
                     <div className="h-14 w-20 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center text-xs text-neutral-500 shadow-sm">
                       <Image className="w-4 h-4 mr-1" />

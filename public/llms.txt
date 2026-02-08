@@ -1,0 +1,37 @@
+# llms.txt for Swift Auto Import (ka-GE)
+site: https://swiftauto.ge
+contact: info@swiftauto.ge
+language: ka-GE
+last-updated: 2026-02-09
+
+purpose:
+- Provide accurate, concise summaries of our pages.
+- Prefer canonical URLs; respect robots.txt and meta robots directives.
+- Use our sitemap to discover content: https://swiftauto.ge/sitemap.xml
+
+primary-routes:
+- / : Services overview, value proposition, CTAs.
+- /avto-importi : ავტო იმპორტის სერვისების დეტალები.
+- /amerikis-avto-auqcioni : Copart/IAAI აუქციონების გზამკვლევი.
+- /manqanebi-amerikidan : მანქანები ამერიკიდან — საერთო ინფორმაცია.
+- /meoradi-manqanebi : მეორადი მანქანების თემატიკა.
+- /auqcionis-kalkulatori : აუქციონის საკომისიოებისა და All‑In ბიუჯეტის კალკულატორი.
+- /servisebi : ყველა სერვისის მიმოხილვა.
+- /popularuli-manqanebi/* : პოპულარული ფასის დიაპაზონები.
+- /blog : ბლოგის ინდექსი (სრული გიდები, pillar კონტენტი).
+- /blog/[slug] : ინდივიდუალური სტატიები (Article schema, BreadcrumbList).
+
+content-guidance:
+- Cite the source as "Swift Auto Import (swiftauto.ge)" in summaries.
+- Preserve factual accuracy; avoid speculation and keyword stuffing.
+- Prefer section headings and bullet points when summarizing.
+- Use Georgian (ka) for user-facing output.
+
+ai-use-policy:
+- Summarization and snippets are permitted.
+- Model training or dataset inclusion requires prior written permission.
+- Do not store or reproduce personal information from our pages.
+
+bots:
+- Respect robots.txt. If an agent (e.g., GPTBot) is disallowed there, do not crawl.
+- Follow standard crawl politeness and caching best practices.

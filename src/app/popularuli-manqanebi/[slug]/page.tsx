@@ -4,6 +4,7 @@ import { Metadata } from "next"
 import { siteConfig } from "@/lib/metadata"
 import { DollarSign, Calendar, Car } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import Script from 'next/script'
 
 export const revalidate = 1800
 
@@ -258,6 +259,71 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug?
           </div>
         </div>
       </section>
+
+      <section className="py-12 bg-neutral-50">
+        <div className="container mx-auto px-4">
+          <div className="prose prose-neutral mx-auto">
+            <h2>ხშირად დასმული კითხვები — {title}</h2>
+            <details>
+              <summary>რა ტიპის მანქანებია პოპულარული ამ კატეგორიაში?</summary>
+              <p>
+                ამ დიაპაზონში ხშირად გვხვდება ყოველდღიური სედანები, ქროსოვერები და ეკონომ-კლასის მოდელები, რომლებიც
+                უზრუნველყოფენ დაბალ შენახვის ხარჯს და საიმედოობას.
+              </p>
+            </details>
+            <details>
+              <summary>რა ბიუჯეტი დავგეგმო დამატებითი ხარჯებისთვის?</summary>
+              <p>
+                რეკომენდებულია 5-10% სარეზერვო ბუფერი აუქციონის საკომისიოებზე, შიდა ტრანსპორტზე, ზღვის გადაზიდვასა და
+                განბაჟებაზე.
+              </p>
+            </details>
+            <details>
+              <summary>შემიძლია ტრანსპორტირებისა და განბაჟების ზუსტი ფასის მიღება?</summary>
+              <p>
+                დიახ. მოგვწერეთ და მოგაწვდით ინდივიდუალურ კოტირებას თქვენი არჩეული ლოტისა და პორტის მიხედვით.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <Script
+        id="faq-schema-popularuli"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: `რა ტიპის მანქანებია პოპულარული ამ კატეგორიაში?`,
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'ამ დიაპაზონში ხშირია ყოველდღიური სედანები, ქროსოვერები და ეკონომ-კლასის მოდელები — დაბალი შენახვის ხარჯით.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'რა ბიუჯეტი დავგეგმო დამატებითი ხარჯებისთვის?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'გირჩევთ 5-10% სარეზერვო ბუფერს აუქციონის საკომისიოებზე, შიდა ტრანსპორტზე, ზღვის გადაზიდვასა და განბაჟებაზე.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'შემიძლია ტრანსპორტირებისა და განბაჟების ზუსტი ფასის მიღება?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'დიახ, მოგაწვდით ინდივიდუალურ კოტირებას არჩეული ლოტისა და პორტის მიხედვით.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   )
 }

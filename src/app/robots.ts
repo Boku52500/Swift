@@ -16,6 +16,8 @@ export default function robots(): MetadataRoute.Robots {
           '/gaxdi-dileri',
           '/auqcionis-kalkulatori',
           '/contact',
+          '/blog',
+          '/blog/*',
           '/popularuli-manqanebi',
           '/popularuli-manqanebi/*'
         ],
@@ -23,6 +25,7 @@ export default function robots(): MetadataRoute.Robots {
           '/private/',
           '/api/',
           '/uploads/',
+          '/dealer/login',
           // keep JSON accessible (manifests, feeds)
         ]
       },
@@ -31,7 +34,10 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/']
       }
     ],
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    sitemap: [
+      `${siteConfig.url}/sitemap.xml`,
+      `${siteConfig.url}/sitemap-images.xml`,
+    ],
     host: siteConfig.url
   }
 }

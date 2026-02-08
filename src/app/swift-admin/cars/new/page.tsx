@@ -60,6 +60,26 @@ export default function NewCarPage() {
     }
   }, [files])
 
+  async function uploadInBatches(allFiles: File[], batchSize = 12): Promise<string[]> {
+    const urls: string[] = []
+    for (let i = 0; i < allFiles.length; i += batchSize) {
+      const chunk = allFiles.slice(i, i + batchSize)
+      const fd = new FormData()
+      for (const f of chunk) fd.append("files", f)
+      const res = await fetch("/api/upload", { method: "POST", body: fd })
+      let payload: any = null
+      try {
+        payload = await res.json()
+      } catch {}
+      if (!res.ok || !payload?.success) {
+        const msg = (payload && payload.message) ? payload.message : `Failed to upload images (batch ${Math.floor(i / batchSize) + 1})`
+        throw new Error(msg)
+      }
+      if (Array.isArray(payload.urls)) urls.push(...payload.urls)
+    }
+    return urls
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
@@ -71,13 +91,7 @@ export default function NewCarPage() {
     let uploadedUrls: string[] = []
     try {
       if (files.length > 0) {
-        const fd = new FormData()
-        for (const f of files) fd.append("files", f)
-        const upRes = await fetch("/api/upload", { method: "POST", body: fd })
-        if (!upRes.ok) throw new Error("Failed to upload images")
-        const upJson = await upRes.json()
-        if (!upJson.success) throw new Error(upJson.message || "Failed to upload images")
-        uploadedUrls = Array.isArray(upJson.urls) ? upJson.urls : []
+        uploadedUrls = await uploadInBatches(files, 12)
       }
     } catch (err) {
       setIsLoading(false)
@@ -90,13 +104,7 @@ export default function NewCarPage() {
     const invoiceFiles = invoices.map((inv) => inv.file).filter(Boolean) as File[]
     try {
       if (invoiceFiles.length > 0) {
-        const fdInv = new FormData()
-        for (const f of invoiceFiles) fdInv.append("files", f)
-        const upRes = await fetch("/api/upload", { method: "POST", body: fdInv })
-        if (!upRes.ok) throw new Error("Failed to upload invoices")
-        const upJson = await upRes.json()
-        if (!upJson.success) throw new Error(upJson.message || "Failed to upload invoices")
-        invoiceFileUrls = Array.isArray(upJson.urls) ? upJson.urls : []
+        invoiceFileUrls = await uploadInBatches(invoiceFiles, 8)
       }
     } catch (err) {
       setIsLoading(false)
