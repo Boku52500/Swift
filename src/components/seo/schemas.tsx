@@ -35,7 +35,7 @@ export const LocalBusinessSchema = () => {
         "email": siteConfig.contact.email,
         "contactType": "customer support",
         "areaServed": "GE",
-        "availableLanguage": ["ka"]
+        "availableLanguage": ["ka-GE"]
       }
     ],
     "address": {
@@ -100,9 +100,10 @@ export const ServiceSchema = ({ services }: { services: Array<{ title: string; d
       "name": service.title,
       "description": service.description,
       "provider": {
-        "@type": "AutoDealer",
+        "@type": "Organization",
         "name": siteConfig.name,
-        "url": siteConfig.url
+        "url": siteConfig.url,
+        "sameAs": [siteConfig.links.facebook, siteConfig.links.instagram]
       }
     }))
   }

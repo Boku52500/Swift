@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'servisebi', priority: 0.8 },
     { url: 'gaxdi-dileri', priority: 0.7 },
     { url: 'contact', priority: 0.6 },
+    { url: 'popularuli-manqanebi', priority: 0.9 },
     { url: 'popularuli-manqanebi/5000-mde', priority: 0.9 },
     { url: 'popularuli-manqanebi/10000-mde', priority: 0.9 },
     { url: 'popularuli-manqanebi/15000-mde', priority: 0.9 },
