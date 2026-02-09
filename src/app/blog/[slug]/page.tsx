@@ -34,9 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
   if (!post) return {}
 
   const isCost = post.slug === 'ra-ghirs-manqanis-chamoyvana-amerikidan-sakartveloshi'
-  const titleTag = isCost
-    ? 'რა ღირს მანქანის ჩამოყვანა ამერიკიდან (ამჟამინდელი ფასები) – Swift Auto Import'
-    : `${post.title} - Swift Auto Import`
+  const titleTag = `${post.title} – Swift Auto Import`
   const description = isCost
     ? 'დეტალური გზამკვლევი ფასებზე: აუქციონის საკომისიოები, შიდა/საზღვაო ტრანსპორტი, პორტი, განბაჟება, დაზღვევა. მიიღეთ ზუსტი All‑In გამოთვლა.'
     : post.excerpt
@@ -125,7 +123,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug?
 
           {isCostLocal && (
             <section className="mb-6 rounded-lg border border-neutral-200 bg-white p-4">
-              <h2 className="text-base font-semibold mb-2">მოკლე რჩევები (Key takeaways)</h2>
+              <h3 className="text-base font-semibold mb-2">მოკლე რჩევები (Key takeaways)</h3>
               <ul className="list-disc pl-5 text-sm text-neutral-700 space-y-1">
                 <li>All‑In ბიუჯეტი შედგება აუქციონის ფასის, საკომისიოების, შიდა/საზღვაო ტრანსპორტის, პორტისა და განბაჟებისგან.</li>
                 <li>ჩვეულებრივი ვადაა 5–10 კვირა ბიდინგიდან თბილისში მიღებამდე.</li>
