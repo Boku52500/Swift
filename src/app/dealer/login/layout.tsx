@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'დილერის შესვლა | Dealer Login | Swift Auto',
-  description: 'ავტორიზაცია Swift Auto-ს დილერებისთვის. შედით დილერის პანელში უსაფრთხოდ და სწრაფად.',
+  title: 'დილერის გვერდი - Swift Auto Import',
+  description: 'შედით Swift Auto Import-ის დილერის პანელში. უსაფრთხო და სწრაფი წვდომა ინვენტარსა და განახლებებზე.',
   alternates: { canonical: '/dealer/login' },
   robots: {
-    index: false,
-    follow: false,
-    googleBot: { index: false, follow: false },
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
 }
 

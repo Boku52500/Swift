@@ -25,7 +25,7 @@ export const blogPosts: BlogPostMeta[] = [
     keywords: ['ამერიკის აუქციონი', 'პირველი მანქანა', 'VIN', 'ბიდინგი', 'Copart', 'IAAI', 'სათაური (title)', 'ინსპექცია']
   },
   {
-    slug: 'romeli-manqanebi-aris-qvelaze-momgebiani-sakartveloshi',
+    slug: 'romeli-manqanebi-aris-kvelaze-momgebiani-sakartveloshi',
     title: 'რომელი მანქანების ჩამოყვანა არის ყველაზე მომგებიანი საქართველოში',
     excerpt: 'ბაზრის ანალიზი და კატეგორიები: ეკონომ-კლასი, ჰიბრიდები, SUV/ქროსოვერები, ბიზნეს-კლასი — რა და რატომაა ყველაზე მომგებიანი.',
     date: '2025-06-11',
@@ -33,7 +33,7 @@ export const blogPosts: BlogPostMeta[] = [
     keywords: ['მომგებიანი მანქანები', 'ჰიბრიდი', 'SUV', 'ეკონომ მანქანა', 'საქართველო ბაზარი', 'მანქანის იმპორტი']
   },
   {
-    slug: 'copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosaqvanad',
+    slug: 'copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosakvanad',
     title: 'Copart თუ IAAI – რომელი აუქციონი სჯობს მანქანის ჩამოსაყვანად?',
     excerpt: 'ორი ლიდერი პლატფორმის შედარება: საფასო პოლიტიკა, დაზიანების ტიპები, ბიდინგი, მიწოდების ვადები და საუკეთესო პრაქტიკები.',
     date: '2025-05-17',
@@ -41,7 +41,7 @@ export const blogPosts: BlogPostMeta[] = [
     keywords: ['Copart', 'IAAI', 'აუქციონი', 'ბიდინგი', 'მანქანის იმპორტი', 'ტრანსპორტირება']
   },
   {
-    slug: 'qvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan',
+    slug: 'kvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan',
     title: 'ყველაზე ხშირი შეცდომები მანქანის ჩამოყვანისას ამერიკიდან',
     excerpt: 'რა უნდა ავირიდოთ: გაუმართავი ბიუჯეტი, VIN-ის არასწორი შემოწმება, ტრანსპორტირების/დაზღვევის იგნორი, დოკუმენტების დაგვიანება.',
     date: '2025-02-07',

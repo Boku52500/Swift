@@ -31,7 +31,23 @@ const config = {
   compress: true,
   poweredByHeader: false,
   async redirects() {
-    return []
+    return [
+      {
+        source: '/blog/romeli-manqanebi-aris-qvelaze-momgebiani-sakartveloshi',
+        destination: '/blog/romeli-manqanebi-aris-kvelaze-momgebiani-sakartveloshi',
+        permanent: true,
+      },
+      {
+        source: '/blog/copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosaqvanad',
+        destination: '/blog/copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosakvanad',
+        permanent: true,
+      },
+      {
+        source: '/blog/qvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan',
+        destination: '/blog/kvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan',
+        permanent: true,
+      },
+    ]
   },
   async rewrites() {
     return [

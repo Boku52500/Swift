@@ -14,6 +14,7 @@ export default function robots(): MetadataRoute.Robots {
           '/meoradi-manqanebi',
           '/servisebi',
           '/gaxdi-dileri',
+          '/dealer/login',
           '/auqcionis-kalkulatori',
           '/contact',
           '/blog',
@@ -25,7 +26,6 @@ export default function robots(): MetadataRoute.Robots {
           '/private/',
           '/api/',
           '/uploads/',
-          '/dealer/login',
           // keep JSON accessible (manifests, feeds)
         ]
       },

@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'auqcionis-kalkulatori', priority: 0.8 },
     { url: 'servisebi', priority: 0.8 },
     { url: 'gaxdi-dileri', priority: 0.7 },
+    { url: 'dealer/login', priority: 0.5 },
     { url: 'contact', priority: 0.6 },
     { url: 'popularuli-manqanebi', priority: 0.9 },
     { url: 'popularuli-manqanebi/5000-mde', priority: 0.9 },

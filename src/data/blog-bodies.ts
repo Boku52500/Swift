@@ -5,13 +5,13 @@ export const blogBodies: Record<string, string[]> = {
   'rogor-avarchiot-pirveli-manqana-amerikis-auqcionze': [
     'სტატია მზადდება. მოიცავს VIN-ის შემოწმებას (CARFAX/AutoCheck), ტიტულების ტიპებს (Clean/Salvage/Rebuilt/Export Only), ბიდინგის სტრატეგიას, ინსპექციას, რისკების მართვას, ბიუჯეტირებას და ტრანსპორტირების გეგმას.',
   ],
-  'romeli-manqanebi-aris-qvelaze-momgebiani-sakartveloshi': [
+  'romeli-manqanebi-aris-kvelaze-momgebiani-sakartveloshi': [
     'სტატია მზადდება. გაანალიზდება რომელი სეგმენტები და მოდელები არის ყველაზე მომგებიანი საქართველოში: ეკონომ-კლასი, ჰიბრიდები, SUV/ქროსოვერები, ფლიტის ავტომობილები, დაბალი გარბენის სედანი/ქროსოვერი, საწყისი სარემონტო ხარჯების გათვალისწინებით.',
   ],
-  'copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosaqvanad': [
+  'copart-tu-iaai-romeli-auqcioni-sjobs-manqanis-chamosakvanad': [
     'სტატია მზადდება. შედარებული იქნება Copart vs IAAI: საკომისიოები, გამოქვეყნებული დაზიანებები, ბიდინგის წესები, მიწოდების ვადები, ინვენტარის ტიპები, ფასდაკლებები და საუკეთესო პრაქტიკები.',
   ],
-  'qvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan': [
+  'kvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan': [
     'სტატია მზადდება. მიმოხილულია ყველაზე ხშირი შეცდომები: არასწორი VIN-შემოწმება, რისკების იგნორი, გაუთვლელი სარემონტო ხარჯები, ტრანსპორტის/დაზღვევის იგნორი, დოკუმენტებისა და განბაჟების დაგვიანება.',
   ],
 }
