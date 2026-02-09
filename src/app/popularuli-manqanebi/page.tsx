@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Script from 'next/script'
 import { siteConfig } from '@/lib/metadata'
 
 export const metadata: Metadata = {
@@ -81,6 +82,42 @@ export default function PopularuliIndexPage() {
               დაგვიკავშირდით კონსულტაციისთვის
             </Link>
           </div>
+          <Script
+            id="faq-schema-popularuli-index"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: [
+                  {
+                    '@type': 'Question',
+                    name: 'რომელი დიაპაზონი შევარჩიო?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'ბიუჯეტზე და საჭიროებებზეა დამოკიდებული: $5k-მდე — ეკონომიური ურბანული მოდელები, $10k–$15k — ჰიბრიდები/ქროსოვერები, $20k-მდე — ახალი წლოვანება და უკეთესი კომპლექტაციები.'
+                    }
+                  },
+                  {
+                    '@type': 'Question',
+                    name: 'რა დრო სჭირდება ჩამოყვანას?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'სტანდარტულად 5–10 კვირა ბიდინგიდან თბილისში მიღებამდე — სეზონისა მიხედვით ცვალებადია.'
+                    }
+                  },
+                  {
+                    '@type': 'Question',
+                    name: 'შემიძლია მივიღო ზუსტი All‑In კოტირება?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'დიახ — გამოგვიგზავნეთ VIN/ლინკი, ქალაქი და სასურველი ბიუჯეტი; 15–60 წუთში გამოგიგზავნით დეტალურ კოტირებას.'
+                    }
+                  }
+                ]
+              })
+            }}
+          />
         </div>
       </section>
     </div>

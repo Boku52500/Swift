@@ -36,7 +36,23 @@ export default function BlogIndexPage() {
     <div className="min-h-screen bg-neutral-50">
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">ბლოგი</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">ბლოგი</h1>
+          <div className="prose prose-neutral max-w-3xl mb-8 mx-auto text-center">
+            <h2>რას განვიხილავთ</h2>
+            <p>
+              აქ იპოვით პრაქტიკულ გზამკვლევებს მანქანის იმპორტზე ამერიკიდან: Copart/IAAI აუქციონები, ბიდინგის სტრატეგიები,
+              ტრანსპორტირება/კონტეინერი, ვადები და საკომისიოები, საბაჟო და დოკუმენტაცია. ყველა სტატია დაწერილია
+              ქართულ ბაზარზე მორგებული მაგალითებით და რეალური პროცესებით, რათა მიიღოთ სწორი გადაწყვეტილება
+              და თავიდან აიცილოთ ზედმეტი ხარჯი.
+            </p>
+            <p>
+              სწრაფი გამოთვლისთვის გამოიყენეთ ჩვენი{' '}
+              <Link href="/auqcionis-kalkulatori" className="text-red-600 hover:text-red-700">აუქციონის კალკულატორი</Link>{' '}
+              ან{' '}
+              <Link href="/contact" className="text-red-600 hover:text-red-700">დაგვიკავშირდით</Link>{' '}
+              და 15–60 წუთში მიიღებთ ინდივიდუალურ კოტირებას.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.map((p) => (
               <Link key={p.slug} href={`/blog/${p.slug}`} className="group bg-white rounded-xl border border-neutral-200/70 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
