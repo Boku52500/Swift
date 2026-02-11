@@ -7,12 +7,20 @@ import Script from "next/script"
 export const metadata: Metadata = {
   title: "დაგვიკავშირდით - Swift Auto Import",
   description: "დაგვიკავშირდით კონსულტაციისთვის. ჩვენი გამოცდილი გუნდი დაგეხმარებათ მანქანის შერჩევაში და იმპორტში ამერიკიდან.",
-  alternates: { canonical: `${siteConfig.url}/contact` },
+  alternates: { 
+    canonical: `${siteConfig.url}/contact`,
+    languages: {
+      'x-default': `${siteConfig.url}/contact`,
+      'ka-GE': `${siteConfig.url}/contact`,
+      'en-US': `${siteConfig.url}/en/contact`,
+      'ru-RU': `${siteConfig.url}/ru/kontakty`,
+    }
+  },
 }
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-neutral-900 text-white py-16">
         <div className="container mx-auto px-4">
@@ -21,36 +29,6 @@ export default function ContactPage() {
             <p className="text-lg text-neutral-300">
               გაქვთ კითხვები? ჩვენი გუნდი მზადაა დაგეხმაროთ. დაგვიკავშირდით ნებისმიერ დროს.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-10 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="prose prose-neutral max-w-3xl mx-auto">
-            <h2>როგორ გვეკონტაქტოთ და რას უნდა ელოდოთ</h2>
-            <p>
-              Swift Auto Import პასუხობს შეტყობინებებს სწრაფად — სამუშაო საათებში ჩვეულებრივ 15–60 წუთში. 
-              ვემსახურებით მთელ საქართველოს (თბილისი/რეგიონები) და ვსაუბრობთ ქართულ, ინგლისურ და რუსულ ენებზე. 
-              რომ მოვამზადოთ ზუსტი All‑In კოტირება, სასურველია მოგვწეროთ VIN/ლოტის ლინკი, სასურველი ბიუჯეტი და თქვენი ქალაქი.
-            </p>
-            <p>
-              კონსულტაცია მოიცავს Copart/IAAI საკომისიოებს, შიდა/საზღვაო ტრანსპორტს, 
-              სავარაუდო ვადებს (ტიპურად 5–10 კვირა) და დოკუმენტებს. ჩვენი მიზანია გამჭვირვალობა და პროგნოზირებადობა.
-            </p>
-            <h3>ხშირად დასმული კითხვები</h3>
-            <details>
-              <summary>რა დროში ვიღებ პასუხს?</summary>
-              <p>სამუშაო საათებში 15–60 წუთში; იშვიათ შემთხვევებში კითხვებს ვპასუხობთ მომდევნო სამუშაო დღეს.</p>
-            </details>
-            <details>
-              <summary>რა ინფორმაცია გამოვგზავნო?</summary>
-              <p>VIN/ლინკი, სასურველი ბიუჯეტი, ქალაქი და პრიორიტეტები (ეკონომია/ქროსოვერი/ჰიბრიდი და სხვ.).</p>
-            </details>
-            <details>
-              <summary>კონფიდენციურობა როგორია?</summary>
-              <p>ინფორმაცია გამოიყენება მხოლოდ კოტირებისა და კომუნიკაციისთვის და არ გადაეცემა მესამე პირებს მარკეტინგის მიზნით.</p>
-            </details>
           </div>
         </div>
       </section>
@@ -113,6 +91,37 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      <section className="py-10 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="prose prose-neutral max-w-3xl mx-auto">
+            <h2>როგორ გვეკონტაქტოთ და რას უნდა ელოდოთ</h2>
+            <p>
+              Swift Auto Import პასუხობს შეტყობინებებს სწრაფად — სამუშაო საათებში ჩვეულებრივ 15–60 წუთში. 
+              ვემსახურებით მთელ საქართველოს (თბილისი/რეგიონები) და ვსაუბრობთ ქართულ, ინგლისურ და რუსულ ენებზე. 
+              რომ მოვამზადოთ ზუსტი All‑In კოტირება, სასურველია მოგვწეროთ VIN/ლოტის ლინკი, სასურველი ბიუჯეტი და თქვენი ქალაქი.
+            </p>
+            <p>
+              კონსულტაცია მოიცავს Copart/IAAI საკომისიოებს, შიდა/საზღვაო ტრანსპორტს, 
+              სავარაუდო ვადებს (ტიპურად 5–10 კვირა) და დოკუმენტებს. ჩვენი მიზანია გამჭვირვალობა და პროგნოზირებადობა.
+            </p>
+            <h3>ხშირად დასმული კითხვები</h3>
+            <details>
+              <summary>რა დროში ვიღებ პასუხს?</summary>
+              <p>სამუშაო საათებში 15–60 წუთში; იშვიათ შემთხვევებში კითხვებს ვპასუხობთ მომდევნო სამუშაო დღეს.</p>
+            </details>
+            <details>
+              <summary>რა ინფორმაცია გამოვგზავნო?</summary>
+              <p>VIN/ლინკი, სასურველი ბიუჯეტი, ქალაქი და პრიორიტეტები (ეკონომია/ქროსოვერი/ჰიბრიდი და სხვ.).</p>
+            </details>
+            <details>
+              <summary>კონფიდენციურობა როგორია?</summary>
+              <p>ინფორმაცია გამოიყენება მხოლოდ კოტირებისა და კომუნიკაციისთვის და არ გადაეცემა მესამე პირებს მარკეტინგის მიზნით.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
 
       
 

@@ -4,17 +4,21 @@ import { generateMetadata, siteConfig } from "@/lib/metadata";
 import { LocalBusinessSchema, WebsiteSchema, PersonSchema } from "@/components/seo/schemas";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
+import { headers } from "next/headers";
 import "./globals.css";
 
 export const metadata = generateMetadata();
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hdrs = await headers()
+  const loc = hdrs.get('x-locale') || 'ka'
+  const htmlLang = loc === 'en' ? 'en' : loc === 'ru' ? 'ru' : 'ka'
   return (
-    <html lang="ka" className="scroll-smooth">
+    <html lang={htmlLang} className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ef4444" />

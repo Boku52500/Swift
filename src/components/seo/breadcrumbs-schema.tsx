@@ -1,3 +1,5 @@
+import { siteConfig } from '@/lib/metadata'
+
 interface BreadcrumbItem {
   name: string
   item: string
@@ -15,7 +17,7 @@ export function BreadcrumbsSchema({ items }: BreadcrumbsSchemaProps) {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": `https://swiftautoimport.ge${item.item}`,
+      "item": `${siteConfig.url}${item.item}`,
     })),
   }
 

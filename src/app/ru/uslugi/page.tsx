@@ -1,0 +1,107 @@
+import { Car, Gavel, Ship, Clock, Shield, Users, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+import Script from 'next/script'
+import { siteConfig } from '@/lib/metadata'
+import { ServiceSchema } from '@/components/seo/schemas'
+
+export const metadata: Metadata = {
+  title: 'Услуги | Swift Auto Import',
+  description: 'От подбора и торгов до доставки, таможни и выдачи в Грузии — полный цикл услуг.',
+  alternates: {
+    canonical: `${siteConfig.url}/ru/uslugi`,
+    languages: {
+      'x-default': `${siteConfig.url}/servisebi`,
+      'ka-GE': `${siteConfig.url}/servisebi`,
+      'en-US': `${siteConfig.url}/en/services`,
+      'ru-RU': `${siteConfig.url}/ru/uslugi`,
+    },
+  },
+}
+
+const services = [
+  {
+    icon: Car,
+    title: 'Импорт авто',
+    description: 'Доступ к ведущим аукционам США: Copart, IAAI, Manheim, Adesa. Широкий выбор и прозрачная история.',
+    link: '/ru/import-avto'
+  },
+  {
+    icon: Gavel,
+    title: 'Поддержка на аукционе',
+    description: 'Стратегии торгов, оценка состояния и анализ цен для лучшей сделки.',
+    link: '/ru/aukciony-ssha'
+  },
+  {
+    icon: Ship,
+    title: 'Логистика и таможня',
+    description: 'Внутренняя логистика в Грузии, полное таможенное сопровождение и оформление документов.',
+    link: '/ru/avto-iz-ssha'
+  },
+  {
+    icon: Clock,
+    title: 'Поддержка 24/7',
+    description: 'Связь на каждом этапе. Работаем на грузинском, английском и русском.'
+  },
+  {
+    icon: Shield,
+    title: 'Безопасные сделки',
+    description: 'Прозрачные платежи, гарантированный сервис и ответственность.'
+  },
+  {
+    icon: Users,
+    title: 'Персональный менеджер',
+    description: 'Ваш советник для взвешенного выбора и управления процессом.'
+  }
+]
+
+export default function ServicesRuPage() {
+  return (
+    <main>
+      <section className="pt-32 pb-16 bg-gradient-to-b from-neutral-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Наши услуги</h1>
+            <p className="text-xl text-neutral-600">Полный цикл — от подбора до выдачи</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <div key={index} className="group relative bg-white rounded-xl overflow-hidden hover:bg-neutral-50 transition-colors border border-neutral-200/50 hover:border-red-200">
+                <div className="p-8">
+                  <div className="mb-6 inline-flex p-3 bg-red-50 rounded-lg text-red-600">
+                    <service.icon className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
+                  <p className="text-neutral-600 mb-6">{service.description}</p>
+                  {service.link && (
+                    <Link href={service.link} className="inline-flex items-center text-red-600 hover:text-red-700 font-medium group-hover:translate-x-1 transition-transform">
+                      Подробнее
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
+                  )}
+                </div>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-red-50 via-red-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <ServiceSchema services={services.map(s => ({ title: s.title, description: s.description }))} />
+      <Script
+        id="breadcrumb-services-ru"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Главная', item: `${siteConfig.url}/ru` },
+              { '@type': 'ListItem', position: 2, name: 'Услуги', item: `${siteConfig.url}/ru/uslugi` },
+            ],
+          }),
+        }}
+      />
+    </main>
+  )
+}

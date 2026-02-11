@@ -15,6 +15,7 @@ export function AuctionHeroSection() {
           fill
           priority
           quality={90}
+          sizes="(max-width: 1024px) 100vw, 1920px"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent" />

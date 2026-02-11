@@ -1,8 +1,10 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { blogPosts } from "@/data/blog"
+import { blogPostsEn } from "@/data/blog-en"
+import { blogPostsRu } from "@/data/blog-ru"
 import { BreadcrumbSchema } from "@/components/seo/schemas"
 
 function titleCase(s: string) {
@@ -15,7 +17,7 @@ function titleCase(s: string) {
   }
 }
 
-const LABELS: Record<string, string> = {
+const LABELS_KA: Record<string, string> = {
   "": "მთავარი",
   blog: "ბლოგი",
   contact: "კონტაქტი",
@@ -35,30 +37,91 @@ const LABELS: Record<string, string> = {
   "20000-mde": "$20,000-მდე",
 }
 
+const LABELS_EN: Record<string, string> = {
+  "": "Home",
+  blog: "Blog",
+  contact: "Contact",
+  "car-import": "Car Import",
+  "us-auto-auctions": "US Auto Auctions",
+  "cars-from-usa": "Cars from USA",
+  "used-cars": "Used Cars",
+  services: "Services",
+  "become-a-dealer": "Become a Dealer",
+  "auction-calculator": "Auction Calculator",
+  "popular-cars": "Popular Cars",
+  dealer: "Dealer",
+  login: "Login",
+  "under-5000": "Under $5,000",
+  "under-10000": "Under $10,000",
+  "under-15000": "Under $15,000",
+  "under-20000": "Under $20,000",
+}
+
+const LABELS_RU: Record<string, string> = {
+  "": "Главная",
+  blog: "Блог",
+  uslugi: "Услуги",
+  "import-avto": "Импорт авто",
+  "avto-iz-ssha": "Автомобили из США",
+  "aukciony-ssha": "Аукционы США",
+  "podderzhannye-avto": "Б/у автомобили",
+  "populyarnye-avto": "Популярные авто",
+  kontakty: "Контакты",
+  "stat-dilerom": "Стать дилером",
+  "kalkulyator-aukciona": "Калькулятор аукциона",
+  contact: "Контакты",
+  "car-import": "Импорт авто",
+  "us-auto-auctions": "Аукционы США",
+  "cars-from-usa": "Автомобили из США",
+  "used-cars": "Б/у автомобили",
+  services: "Услуги",
+  "become-a-dealer": "Стать дилером",
+  "auction-calculator": "Калькулятор аукциона",
+  "popular-cars": "Популярные авто",
+  dealer: "Дилер",
+  login: "Войти",
+  "under-5000": "До $5,000",
+  "under-10000": "До $10,000",
+  "under-15000": "До $15,000",
+  "under-20000": "До $20,000",
+}
+
 export function Breadcrumbs() {
   const pathname = usePathname() || "/"
-  if (pathname === "/") return null
+  const isEn = pathname.startsWith('/en')
+  const isRu = pathname.startsWith('/ru')
+  if ((!isEn && !isRu && pathname === "/") || (isEn && pathname === "/en") || (isRu && pathname === "/ru")) return null
   const disabledExact = new Set(["/swift-admin-login", "/dealer/login"])
   const disabledPrefixes = ["/dealer", "/swift-admin", "/api/auth"]
   if (disabledExact.has(pathname) || disabledPrefixes.some((p) => pathname.startsWith(p))) {
     return null
   }
 
-  const segments = pathname.split("?")[0].split("#")[0].split("/").filter(Boolean)
+  const rawSegments = pathname.split("?")[0].split("#")[0].split("/").filter(Boolean)
+  const segments = (isEn || isRu) ? rawSegments.slice(1) : rawSegments
 
   const crumbs: Array<{ name: string; path: string }> = []
   // Home
-  crumbs.push({ name: LABELS[""] ?? "მთავარი", path: "/" })
+  crumbs.push({ name: (isEn ? LABELS_EN[""] : isRu ? LABELS_RU[""] : LABELS_KA[""]) ?? (isEn ? 'Home' : isRu ? 'Главная' : 'მთავარი'), path: isEn ? "/en" : isRu ? "/ru" : "/" })
 
-  let acc = ""
+  let acc = isEn ? "/en" : isRu ? "/ru" : ""
   segments.forEach((seg, idx) => {
     acc += `/${seg}`
-    let name = LABELS[seg] || titleCase(seg)
+    const dict = isEn ? LABELS_EN : isRu ? LABELS_RU : LABELS_KA
+    let name = dict[seg] || titleCase(seg)
 
     // Blog post title
     if (segments[0] === "blog" && idx === 1) {
-      const post = blogPosts.find((p) => p.slug === seg)
-      if (post) name = post.title
+      if (isEn) {
+        const post = blogPostsEn.find((p) => p.slug === seg)
+        if (post) name = post.title
+      } else if (!isRu) {
+        const post = blogPosts.find((p) => p.slug === seg)
+        if (post) name = post.title
+      } else {
+        const post = blogPostsRu.find((p) => p.slug === seg)
+        if (post) name = post.title
+      }
     }
 
     crumbs.push({ name, path: acc })
@@ -92,3 +155,6 @@ export function Breadcrumbs() {
     </div>
   )
 }
+
+
+

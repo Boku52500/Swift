@@ -8,7 +8,7 @@ import { siteConfig } from '@/lib/metadata'
 export const metadata: Metadata = {
   title: 'ბლოგი - Swift Auto Import',
   description: 'მანქანის იმპორტი ამერიკიდან, Copart/IAAI აუქციონები, ტრანსპორტირება, განბაჟება და საუკეთესო პრაქტიკები — ჩვენი დეტალური ბლოგ სტატიები.',
-  alternates: { canonical: `${siteConfig.url}/blog`, languages: { 'x-default': `${siteConfig.url}/blog`, 'ka-GE': `${siteConfig.url}/blog` } },
+  alternates: { canonical: `${siteConfig.url}/blog`, languages: { 'x-default': `${siteConfig.url}/blog`, 'ka-GE': `${siteConfig.url}/blog`, 'en-US': `${siteConfig.url}/en/blog`, 'ru-RU': `${siteConfig.url}/ru/blog` } },
   robots: { index: true, follow: true },
   openGraph: {
     type: 'website',

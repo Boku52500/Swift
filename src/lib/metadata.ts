@@ -33,6 +33,8 @@ export function generateMetadata(): Metadata {
       languages: {
         'x-default': '/',
         'ka-GE': '/',
+        'en-US': '/en',
+        'ru-RU': '/ru',
       },
     },
     authors: [{ name: 'Swift Auto Import' }],

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Script from 'next/script'
 import { siteConfig } from '@/lib/metadata'
@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   description: 'აირჩიეთ ფასის კატეგორია და იხილეთ პოპულარული მანქანები ამერიკის აუქციონებიდან: $5,000-მდე, $10,000-მდე, $15,000-მდე და $20,000-მდე.',
   alternates: {
     canonical: `${siteConfig.url}/popularuli-manqanebi`,
+    languages: {
+      'x-default': `${siteConfig.url}/popularuli-manqanebi`,
+      'ka-GE': `${siteConfig.url}/popularuli-manqanebi`,
+      'en-US': `${siteConfig.url}/en/popular-cars`,
+      'ru-RU': `${siteConfig.url}/ru/populyarnye-avto`,
+    },
   },
   openGraph: {
     type: 'website',

@@ -6,5 +6,10 @@ export const metadata: Metadata = {
   keywords: 'ავტო იმპორტი, მანქანების იმპორტი ამერიკიდან, მანქანის ჩამოყვანა ამერიკიდან, Copart, IAAI, ტრანსპორტირება, განბაჟება',
   alternates: {
     canonical: '/avto-importi',
+    languages: {
+      'x-default': '/avto-importi',
+      'ka-GE': '/avto-importi',
+      'en-US': '/en/car-import',
+    },
   },
 }

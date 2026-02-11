@@ -1,6 +1,9 @@
 import { MetadataRoute } from 'next'
 import { siteConfig } from '@/lib/metadata'
 import { blogPosts } from '@/data/blog'
+import { blogPostsEn } from '@/data/blog-en'
+import { blogPostsRu } from '@/data/blog-ru'
+import { getAlternatePath } from '@/lib/locale'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url
@@ -15,7 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'auqcionis-kalkulatori', priority: 0.8 },
     { url: 'servisebi', priority: 0.8 },
     { url: 'gaxdi-dileri', priority: 0.7 },
-    { url: 'dealer/login', priority: 0.5 },
     { url: 'contact', priority: 0.6 },
     { url: 'popularuli-manqanebi', priority: 0.9 },
     { url: 'popularuli-manqanebi/5000-mde', priority: 0.9 },
@@ -27,6 +29,55 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogRoutes = (blogPosts || []).map((p) => ({
     url: `blog/${p.slug}`,
+    priority: 0.7,
+    lastModified: new Date(p.date),
+    changeFrequency: 'weekly' as const,
+  }))
+
+  // English duplicates for static routes using mapping utility
+  const isNotNull = <T,>(v: T | null): v is T => v !== null
+  const enStatic = staticRoutes
+    .map((route) => {
+      const srcPath = route.url ? `/${route.url}` : '/'
+      const alt = getAlternatePath(srcPath, 'en')
+      if (!alt || !alt.startsWith('/en')) return null
+      if (route.url !== '' && alt === '/en') return null
+      return {
+        url: `${baseUrl}${alt}`,
+        lastModified: lastMod,
+        changeFrequency: 'daily' as const,
+        priority: route.priority,
+      }
+    })
+    .filter(isNotNull)
+
+  // Russian duplicates for static routes using mapping utility
+  const ruStatic = staticRoutes
+    .map((route) => {
+      const srcPath = route.url ? `/${route.url}` : '/'
+      const alt = getAlternatePath(srcPath, 'ru')
+      if (!alt || !alt.startsWith('/ru')) return null
+      if (route.url !== '' && alt === '/ru') return null
+      return {
+        url: `${baseUrl}${alt}`,
+        lastModified: lastMod,
+        changeFrequency: 'daily' as const,
+        priority: route.priority,
+      }
+    })
+    .filter(isNotNull)
+
+  // English blog routes from EN metadata
+  const blogRoutesEn = (blogPostsEn || []).map((p) => ({
+    url: `${baseUrl}/en/blog/${p.slug}`,
+    priority: 0.7,
+    lastModified: new Date(p.date),
+    changeFrequency: 'weekly' as const,
+  }))
+
+  // Russian blog routes from RU metadata
+  const blogRoutesRu = (blogPostsRu || []).map((p) => ({
+    url: `${baseUrl}/ru/blog/${p.slug}`,
     priority: 0.7,
     lastModified: new Date(p.date),
     changeFrequency: 'weekly' as const,
@@ -45,6 +96,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: route.changeFrequency,
       priority: route.priority,
     })),
+    ...enStatic,
+    ...ruStatic,
+    ...blogRoutesEn,
+    ...blogRoutesRu,
   ]
 
   return all

@@ -14,7 +14,6 @@ export default function robots(): MetadataRoute.Robots {
           '/meoradi-manqanebi',
           '/servisebi',
           '/gaxdi-dileri',
-          '/dealer/login',
           '/auqcionis-kalkulatori',
           '/contact',
           '/blog',
@@ -36,8 +35,7 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: [
       `${siteConfig.url}/sitemap.xml`,
-      `${siteConfig.url}/sitemap-images.xml`,
     ],
-    host: siteConfig.url
+    host: new URL(siteConfig.url).host
   }
 }

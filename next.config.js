@@ -47,6 +47,27 @@ const config = {
         destination: '/blog/kvelaze-khshiri-shetsdomebi-manqanis-chamoyvanisas-amerikidan',
         permanent: true,
       },
+      // Remove soft duplicate KA fallback routes
+      {
+        source: '/popular-cars/under-5000',
+        destination: '/popularuli-manqanebi/5000-mde',
+        permanent: true,
+      },
+      {
+        source: '/popular-cars/under-10000',
+        destination: '/popularuli-manqanebi/10000-mde',
+        permanent: true,
+      },
+      {
+        source: '/popular-cars/under-15000',
+        destination: '/popularuli-manqanebi/15000-mde',
+        permanent: true,
+      },
+      {
+        source: '/popular-cars/under-20000',
+        destination: '/popularuli-manqanebi/20000-mde',
+        permanent: true,
+      },
     ]
   },
   async rewrites() {
@@ -86,10 +107,6 @@ const config = {
               "frame-ancestors 'self'",
               "upgrade-insecure-requests",
             ].join('; '),
-          },
-          {
-            key: 'Content-Language',
-            value: 'ka-GE'
           },
           {
             key: 'X-DNS-Prefetch-Control',

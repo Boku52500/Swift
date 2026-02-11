@@ -7,7 +7,9 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import { siteConfig } from '@/lib/metadata'
 import { blogPosts } from '@/data/blog'
+import { blogPostsEn } from '@/data/blog-en'
 import { blogBodies } from '@/data/blog-bodies'
+import { blogPostsRu } from '@/data/blog-ru'
 import { AuthorBio } from '@/components/blog/author-bio'
 
 export const revalidate = 1800
@@ -44,7 +46,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
     description,
     alternates: {
       canonical: `${siteConfig.url}/blog/${post.slug}`,
-      languages: { 'x-default': `${siteConfig.url}/blog/${post.slug}`, 'ka-GE': `${siteConfig.url}/blog/${post.slug}` },
+      languages: (() => {
+        const map: Record<string, string> = {
+          'x-default': `${siteConfig.url}/blog/${post.slug}`,
+          'ka-GE': `${siteConfig.url}/blog/${post.slug}`,
+        }
+        const pairEn = blogPostsEn.find(p => p.kaSlug === post.slug)
+        if (pairEn) {
+          map['en-US'] = `${siteConfig.url}/en/blog/${pairEn.slug}`
+        }
+        const pairRu = blogPostsRu.find(p => p.kaSlug === post.slug)
+        if (pairRu) {
+          map['ru-RU'] = `${siteConfig.url}/ru/blog/${pairRu.slug}`
+        }
+        return map
+      })(),
     },
     openGraph: {
       type: 'article',
@@ -221,7 +237,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug?
             mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
             image: [post.image],
             author: [{ '@type': 'Organization', name: 'Swift Auto Import' }],
-            publisher: { '@type': 'Organization', name: 'Swift Auto Import', logo: { '@type': 'ImageObject', url: `${siteConfig.url}${siteConfig.ogImage}` } },
+            publisher: { '@type': 'Organization', name: 'Swift Auto Import', logo: { '@type': 'ImageObject', url: `${siteConfig.url}/images/menulogo.png` } },
             datePublished: post.date,
             dateModified: post.date,
             inLanguage: 'ka-GE',

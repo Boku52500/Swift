@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { siteConfig } from "@/lib/metadata"
@@ -46,6 +47,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
     description,
     alternates: {
       canonical: `${siteConfig.url}/popularuli-manqanebi/${slug}`,
+      languages: {
+        'x-default': `${siteConfig.url}/popularuli-manqanebi/${slug}`,
+        'ka-GE': `${siteConfig.url}/popularuli-manqanebi/${slug}`,
+        'en-US': `${siteConfig.url}/en/popular-cars/${
+          slug === '5000-mde' ? 'under-5000' : slug === '10000-mde' ? 'under-10000' : slug === '15000-mde' ? 'under-15000' : slug === '20000-mde' ? 'under-20000' : slug
+        }`,
+      },
     },
     openGraph: {
       title,
@@ -183,13 +191,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug?
               {cars.map((car) => (
                 <div key={car.id} className="bg-white rounded-xl shadow-sm border border-neutral-200/80 overflow-hidden hover:shadow-md transition-shadow">
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <Image
                       src={car.imageUrl || '/images/engine.jpg'}
-                      alt={car.name}
+                      alt={`${car.name} — წელი ${car.year}`}
                       width={640}
                       height={192}
                       loading="lazy"
-                      decoding="async"
+                      quality={80}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>

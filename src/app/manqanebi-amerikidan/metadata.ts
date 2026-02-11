@@ -6,5 +6,10 @@ export const metadata: Metadata = {
   keywords: 'მანქანები ამერიკიდან, ავტომობილების იმპორტი ამერიკიდან, ტრანსპორტირება ამერიკიდან, განბაჟება, Copart, IAAI, ავტო იმპორტი',
   alternates: {
     canonical: '/manqanebi-amerikidan',
+    languages: {
+      'x-default': '/manqanebi-amerikidan',
+      'ka-GE': '/manqanebi-amerikidan',
+      'en-US': '/en/cars-from-usa',
+    },
   },
 }

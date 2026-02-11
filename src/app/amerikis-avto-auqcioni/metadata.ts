@@ -5,7 +5,12 @@ export const metadata: Metadata = {
   description: 'მანქანების შეძენა ამერიკის აუქციონებზე საუკეთესო ფასად. ✓ Copart ✓ IAAI ✓ პროფესიონალური დახმარება',
   keywords: 'ამერიკის ავტო აუქციონი, Copart, IAAI, აუქციონის მანქანები, ავტო აუქციონი',
   alternates: {
-    canonical: '/amerikis-avto-auqcioni'
+    canonical: '/amerikis-avto-auqcioni',
+    languages: {
+      'x-default': '/amerikis-avto-auqcioni',
+      'ka-GE': '/amerikis-avto-auqcioni',
+      'en-US': '/en/us-auto-auctions',
+    }
   },
   openGraph: {
     title: 'ამერიკის ავტო აუქციონი | Copart & IAAI',

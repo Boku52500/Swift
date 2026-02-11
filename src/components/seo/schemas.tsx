@@ -35,7 +35,7 @@ export const LocalBusinessSchema = () => {
         "email": siteConfig.contact.email,
         "contactType": "customer support",
         "areaServed": "GE",
-        "availableLanguage": ["ka-GE"]
+        "availableLanguage": ["ka-GE", "en-US", "ru-RU"]
       }
     ],
     "address": {
@@ -85,7 +85,7 @@ export const PersonSchema = () => {
       siteConfig.links.facebook,
       siteConfig.links.instagram
     ],
-    "knowsLanguage": ["ka-GE"]
+    "knowsLanguage": ["ka-GE", "en-US", "ru-RU"]
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }

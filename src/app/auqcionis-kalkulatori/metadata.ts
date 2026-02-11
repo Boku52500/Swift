@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description: 'გამოთვალეთ აუქციონის საკომისიო Copart და IAAI აუქციონებზე. ✓ ზუსტი გამოთვლა ✓ მარტივი გამოყენება',
   keywords: 'აუქციონის კალკულატორი, copart საკომისიო, iaai საკომისიო, აუქციონის საკომისიო, დარიცხვის კალკულატორი',
   alternates: {
-    canonical: '/auqcionis-kalkulatori'
+    canonical: '/auqcionis-kalkulatori',
+    languages: {
+      'x-default': '/auqcionis-kalkulatori',
+      'ka-GE': '/auqcionis-kalkulatori',
+      'en-US': '/en/auction-calculator',
+    }
   }
 }

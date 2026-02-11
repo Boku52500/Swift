@@ -5,9 +5,9 @@ export const metadata: Metadata = {
   description: 'შედით Swift Auto Import-ის დილერის პანელში. უსაფრთხო და სწრაფი წვდომა ინვენტარსა და განახლებებზე.',
   alternates: { canonical: '/dealer/login' },
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
   },
 }
 

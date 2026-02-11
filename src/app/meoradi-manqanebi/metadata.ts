@@ -6,5 +6,10 @@ export const metadata: Metadata = {
   keywords: 'მეორადი მანქანები, მეორადი მანქანების ყიდვა, ამერიკული მანქანები, აუქციონის მანქანები, ავტო იმპორტი',
   alternates: {
     canonical: '/meoradi-manqanebi',
+    languages: {
+      'x-default': '/meoradi-manqanebi',
+      'ka-GE': '/meoradi-manqanebi',
+      'en-US': '/en/used-cars',
+    },
   },
 }

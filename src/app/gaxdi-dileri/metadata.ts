@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description: 'დაიწყეთ წარმატებული ბიზნესი ავტომობილების იმპორტის სფეროში Swift Auto-სთან ერთად. ✓ პროფესიონალური მხარდაჭერა ✓ მზარდი ბაზარი ✓ გამჭვირვალე პირობები',
   keywords: 'ავტო დილერი, მანქანების იმპორტის ბიზნესი, ავტო იმპორტის ფრანშიზა, ავტო ბიზნესი, დილერობა',
   alternates: {
-    canonical: '/gaxdi-dileri'
+    canonical: '/gaxdi-dileri',
+    languages: {
+      'x-default': '/gaxdi-dileri',
+      'ka-GE': '/gaxdi-dileri',
+      'en-US': '/en/become-a-dealer',
+    }
   }
 }

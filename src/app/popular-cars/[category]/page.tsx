@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category?
   const canonical = geSlug ? `${siteConfig.url}/popularuli-manqanebi/${geSlug}` : `${siteConfig.url}/popular-cars/${raw}`
   return {
     title,
-    description: title,
+    description: `${title} — დაათვალიერეთ პოპულარული მოდელები ამერიკის აუქციონებიდან ამ ფასის კატეგორიაში და დაგეგმეთ გამჭვირვალე All‑In ბიუჯეტი (საკომისიოები, შიდა, კონტეინერი, საბაჟო).`,
     alternates: { canonical },
     openGraph: { title, url: canonical },
     twitter: { title },
