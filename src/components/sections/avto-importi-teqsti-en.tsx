@@ -54,7 +54,7 @@ export function ImportServicesSectionEn() {
         <div className="mt-12 text-center">
           <Button asChild size="lg">
             <Link href="#contact">
-              Learn more
+              Contact our team
             </Link>
           </Button>
         </div>

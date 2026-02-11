@@ -41,7 +41,7 @@ export function ServicesSectionEn() {
               <h3 className="text-xl font-semibold mt-4 mb-2">{service.title}</h3>
               <p className="text-neutral-600 flex-grow">{service.description}</p>
               <Button variant="ghost" className="mt-4 w-fit" asChild>
-                <Link href={service.link}>Learn more</Link>
+                <Link href={service.link}>View {service.title} Services</Link>
               </Button>
             </div>
           ))}

@@ -75,7 +75,7 @@ export default function ServicesEnPage() {
                   <p className="text-neutral-600 mb-6">{service.description}</p>
                   {service.link && (
                     <Link href={service.link} className="inline-flex items-center text-red-600 hover:text-red-700 font-medium group-hover:translate-x-1 transition-transform">
-                      Learn more
+                      Explore {service.title}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Link>
                   )}
